@@ -40,12 +40,11 @@ const Studio: React.FC = () => {
   return (
     <div className="min-h-screen">
       <section className="relative h-[60vh] xl:h-[70vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background z-10" />
-        <img
-          src="https://miaoda-site-img.s3cdn.medo.dev/images/9a82b266-d14f-4125-9809-b8f1d790ff7b.jpg"
-          alt="HYMNS Studio"
-          className="absolute inset-0 w-full h-full object-cover animate-fadeIn"
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/images/hymns-studio.jpeg')" }}
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background z-10" />
         <div className="relative z-20 text-center px-4 max-w-4xl mx-auto">
           <h1 className="text-4xl xl:text-7xl font-bold text-foreground mb-4 xl:mb-6 animate-fadeInUp">
             HYMNS Studio
