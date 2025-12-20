@@ -81,7 +81,7 @@ const Pricing: React.FC = () => {
     <div className="min-h-screen py-12 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 animate-fadeInDown">
-          <h1 className="text-4xl xl:text-6xl font-bold text-foreground mb-4">
+          <h1 className="text-4xl xl:text-6xl font-bold text-black mb-4">
             Studio Pricing
           </h1>
           <p className="text-lg xl:text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -139,7 +139,7 @@ const Pricing: React.FC = () => {
         </div>
 
         <div className="mb-16 animate-fadeInUp animation-delay-600">
-          <h2 className="text-3xl xl:text-5xl font-bold text-foreground mb-4 text-center">
+          <h2 className="text-3xl xl:text-5xl font-bold text-black mb-4 text-center">
             Additional Services
           </h2>
           <p className="text-muted-foreground text-center mb-8 max-w-2xl mx-auto">
@@ -193,20 +193,20 @@ const Pricing: React.FC = () => {
           </h3>
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 text-muted-foreground">
             <div>
-              <h4 className="font-semibold text-foreground mb-2">Cancellation Policy</h4>
-              <p>Free cancellation up to 48 hours before your session. Late cancellations may incur a 50% fee.</p>
+              <h4 className="font-semibold text-black mb-2">Cancellation Policy</h4>
+              <p className="text-black">Free cancellation up to 48 hours before your session. Late cancellations may incur a 50% fee.</p>
             </div>
             <div>
-              <h4 className="font-semibold text-foreground mb-2">Payment Terms</h4>
-              <p>50% deposit required to secure booking. Remaining balance due on the day of recording.</p>
+              <h4 className="font-semibold text-black mb-2">Payment Terms</h4>
+              <p className="text-black">50% deposit required to secure booking. Remaining balance due on the day of recording.</p>
             </div>
             <div>
-              <h4 className="font-semibold text-foreground mb-2">What to Bring</h4>
-              <p>Your instruments, lyrics, and creative vision. We provide all recording equipment and technical support.</p>
+              <h4 className="font-semibold text-black mb-2">What to Bring</h4>
+              <p className="text-black">Your instruments, lyrics, and creative vision. We provide all recording equipment and technical support.</p>
             </div>
             <div>
-              <h4 className="font-semibold text-foreground mb-2">Studio Hours</h4>
-              <p>Monday - Sunday, 9:00 AM - 10:00 PM. Extended hours available by arrangement.</p>
+              <h4 className="font-semibold text-black mb-2">Studio Hours</h4>
+              <p className="text-black">Monday - Sunday, 9:00 AM - 10:00 PM. Extended hours available by arrangement.</p>
             </div>
           </div>
         </div>

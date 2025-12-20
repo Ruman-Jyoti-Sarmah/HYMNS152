@@ -105,7 +105,7 @@ const Cart: React.FC = () => {
       <div className="min-h-screen py-12 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <ShoppingBag className="h-24 w-24 text-muted-foreground mx-auto mb-6" />
-          <h1 className="text-3xl font-bold text-foreground mb-4">
+          <h1 className="text-3xl font-bold text-black mb-4">
             Your cart is empty
           </h1>
           <p className="text-muted-foreground mb-8">

@@ -59,7 +59,7 @@ const Home: React.FC = () => {
       <section className="py-12 xl:py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 animate-fadeInUp">
-            <h2 className="text-3xl xl:text-5xl font-bold text-foreground mb-4">
+            <h2 className="text-3xl xl:text-5xl font-bold text-blue-600 mb-4">
               What We Offer
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -100,10 +100,10 @@ const Home: React.FC = () => {
 
       <section className="py-12 xl:py-20 px-4 bg-muted/50">
         <div className="max-w-4xl mx-auto text-center animate-fadeInUp">
-          <h2 className="text-3xl xl:text-5xl font-bold text-foreground mb-6">
+          <h2 className="text-3xl xl:text-5xl font-bold text-white mb-6">
             Join the HYMNS Community
           </h2>
-          <p className="text-muted-foreground text-lg mb-8 animate-fadeInUp animation-delay-200">
+          <p className="text-white text-lg mb-8 animate-fadeInUp animation-delay-200">
             Stay connected with us through our social channels and be the first to know about new releases, studio sessions, and exclusive merchandise drops.
           </p>
           <Link to="/contact">

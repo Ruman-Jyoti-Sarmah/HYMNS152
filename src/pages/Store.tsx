@@ -191,10 +191,10 @@ const Store: React.FC = () => {
     <div className="min-h-screen py-6 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6 animate-fadeInDown">
-          <h1 className="text-3xl xl:text-5xl font-bold text-foreground mb-2">
+          <h1 className="text-3xl xl:text-5xl font-bold text-black mb-2">
             HYMNS Store
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-black">
             Shop exclusive HYMNS merchandise
           </p>
         </div>

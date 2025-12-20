@@ -64,7 +64,7 @@ const Studio: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 xl:gap-12 items-center mb-16">
             <div className="animate-fadeInLeft">
-              <h2 className="text-3xl xl:text-5xl font-bold text-foreground mb-6">
+              <h2 className="text-3xl xl:text-5xl font-bold text-black mb-6">
                 State-of-the-Art Facilities
               </h2>
               <p className="text-muted-foreground text-lg mb-6">
@@ -98,7 +98,7 @@ const Studio: React.FC = () => {
           </div>
 
           <div className="mb-16">
-            <h2 className="text-3xl xl:text-5xl font-bold text-foreground mb-8 text-center animate-fadeInUp">
+            <h2 className="text-3xl xl:text-5xl font-bold text-black mb-8 text-center animate-fadeInUp">
               Our Services
             </h2>
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">

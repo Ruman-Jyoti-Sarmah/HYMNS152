@@ -44,7 +44,7 @@ const Music: React.FC = () => {
     <div className="min-h-screen py-12 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="mb-12 animate-fadeInDown">
-          <h1 className="text-4xl xl:text-6xl font-bold text-foreground mb-4">
+          <h1 className="text-4xl xl:text-6xl font-bold text-black mb-4">
             Explore Our Music
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl">
