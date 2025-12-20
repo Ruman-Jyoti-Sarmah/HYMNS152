@@ -21,19 +21,19 @@ const Contact: React.FC = () => {
     {
       icon: Mail,
       title: 'Email',
-      content: 'hello@hymns.com',
-      link: 'mailto:hello@hymns.com'
+      content: 'rumanjyotisarmah@gmail.com',
+      link: 'mailto:rumanjyotisarmah@gmail.com'
     },
     {
       icon: Phone,
       title: 'Phone',
-      content: '+1 (555) 123-4567',
-      link: 'tel:+15551234567'
+      content: '+91 8638144013',
+      link: 'tel:+918638144013'
     },
     {
       icon: MapPin,
       title: 'Location',
-      content: 'Los Angeles, CA',
+      content: 'Ganakpukhuri, Golaghat, Assam',
       link: null
     }
   ];

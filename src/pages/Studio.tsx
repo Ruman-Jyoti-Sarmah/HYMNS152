@@ -16,12 +16,12 @@ const Studio: React.FC = () => {
     {
       title: 'Recording Sessions',
       description: 'Full-day or half-day recording sessions with professional equipment',
-      price: 'From $150/hour'
+      price: 'From ₹150/hour'
     },
     {
       title: 'Mixing & Mastering',
       description: 'Professional mixing and mastering services for your tracks',
-      price: 'From $200/track'
+      price: 'From ₹200/track'
     },
     {
       title: 'Production',

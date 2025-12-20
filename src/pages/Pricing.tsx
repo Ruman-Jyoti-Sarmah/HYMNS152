@@ -8,7 +8,7 @@ const Pricing: React.FC = () => {
   const pricingPlans = [
     {
       name: 'Hourly Session',
-      price: '$100',
+      price: '₹100',
       period: 'per hour',
       description: 'Perfect for quick recordings and demos',
       features: [
@@ -23,7 +23,7 @@ const Pricing: React.FC = () => {
     },
     {
       name: 'Half Day Package',
-      price: '$450',
+      price: '₹450',
       period: '4 hours',
       description: 'Ideal for EP recordings and serious projects',
       features: [
@@ -39,7 +39,7 @@ const Pricing: React.FC = () => {
     },
     {
       name: 'Full Day Package',
-      price: '$800',
+      price: '₹800',
       period: '8 hours',
       description: 'Complete production experience for albums',
       features: [
@@ -59,19 +59,19 @@ const Pricing: React.FC = () => {
   const additionalServices = [
     {
       name: 'Mixing & Mastering',
-      price: '$150',
+      price: '₹150',
       description: 'Professional mixing and mastering for your tracks',
       icon: Headphones
     },
     {
       name: 'Beat Production',
-      price: '$200',
+      price: '₹200',
       description: 'Custom beat creation tailored to your style',
       icon: Music
     },
     {
       name: 'Vocal Coaching',
-      price: '$80',
+      price: '₹80',
       description: 'One-on-one vocal training session',
       icon: Mic2
     }

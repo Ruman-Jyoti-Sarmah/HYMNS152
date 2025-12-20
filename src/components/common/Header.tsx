@@ -27,7 +27,7 @@ const Header: React.FC = () => {
           <Link to="/" className="flex items-center gap-2 xl:gap-3">
             <div className="w-10 h-10 xl:w-12 xl:h-12 rounded-full overflow-hidden bg-gradient-to-br from-primary to-primary/80 shadow-lg hover:scale-110 transition-transform duration-300">
               <img 
-                src="/HYMNS FASHION LOGO.jpg" 
+                src="/images/hymns-logo.jpg" 
                 alt="HYMNS Logo" 
                 className="w-full h-full object-cover"
               />

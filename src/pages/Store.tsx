@@ -282,8 +282,8 @@ const Store: React.FC = () => {
                           className="w-full"
                         />
                         <div className="flex items-center justify-between text-sm text-muted-foreground">
-                          <span>${priceRange[0]}</span>
-                          <span>${priceRange[1]}</span>
+                          <span>₹{priceRange[0]}</span>
+                          <span>₹{priceRange[1]}</span>
                         </div>
                       </div>
                     </div>
@@ -410,7 +410,7 @@ const Store: React.FC = () => {
                             <p className="text-sm text-muted-foreground">Size: {item.size}</p>
                           )}
                           <p className="text-lg font-bold text-foreground">
-                            ${item.product?.price.toFixed(2)}
+                            ₹{item.product?.price.toFixed(2)}
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
@@ -433,7 +433,7 @@ const Store: React.FC = () => {
                         </div>
                         <div className="text-right">
                           <p className="font-bold text-foreground">
-                            ${((item.product?.price || 0) * item.quantity).toFixed(2)}
+                            ₹{((item.product?.price || 0) * item.quantity).toFixed(2)}
                           </p>
                           <Button
                             variant="ghost"
@@ -453,7 +453,7 @@ const Store: React.FC = () => {
                     <div>
                       <p className="text-sm text-muted-foreground">Subtotal</p>
                       <p className="text-2xl font-bold text-foreground">
-                        ${calculateTotal().toFixed(2)}
+                        ₹{calculateTotal().toFixed(2)}
                       </p>
                     </div>
                     <div className="flex gap-3">

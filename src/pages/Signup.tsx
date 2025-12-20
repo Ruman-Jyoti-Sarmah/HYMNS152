@@ -95,7 +95,7 @@ export const Signup: React.FC = () => {
             <div className="flex items-center justify-center mb-4">
               <div className="w-16 h-16 rounded-full overflow-hidden bg-gradient-to-br from-primary to-primary/80 shadow-lg hover:scale-110 transition-transform duration-300">
                 <img 
-                  src="/HYMNS FASHION LOGO.jpg" 
+                  src="/images/hymns-logo.jpg" 
                   alt="HYMNS Logo" 
                   className="w-full h-full object-cover"
                 />
