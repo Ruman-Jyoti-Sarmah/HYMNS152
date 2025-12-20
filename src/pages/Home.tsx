@@ -20,7 +20,7 @@ const Home: React.FC = () => {
       title: 'Professional Studio',
       description: 'Book our state-of-the-art recording studio',
       link: '/studio',
-      image: '/hymns-studio.jpeg'
+      image: '/images/hymns-studio.jpeg'
     }
   ];
 
