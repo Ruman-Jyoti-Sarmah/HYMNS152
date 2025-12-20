@@ -20,7 +20,7 @@ const Home: React.FC = () => {
       title: 'Professional Studio',
       description: 'Book our state-of-the-art recording studio',
       link: '/studio',
-      image: 'https://miaoda-site-img.s3cdn.medo.dev/images/9a82b266-d14f-4125-9809-b8f1d790ff7b.jpg'
+      image: '/hymns-studio.jpeg'
     }
   ];
 
