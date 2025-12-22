@@ -10,35 +10,35 @@ const Music: React.FC = () => {
   const musicItems = [
     {
       id: '1',
-      title: 'NEON LIGHTS',
+      title: 'MUSAFIR',
       artist: 'HYMNS',
-      description: 'A vibrant track that captures the energy of city nightlife',
+      description: 'MUSAFIR- Official song Teaser || Last Dance || Hymn music Production',
       videoId: 'ersn2TyVf5s', 
-      youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+      youtubeUrl: 'https://www.youtube.com/watch?v=ersn2TyVf5s'
     },
     {
       id: '2',
-      title: 'MIDNIGHT DREAMS',
+      title: 'ZG SONGS',
       artist: 'HYMNS',
-      description: 'Smooth melodies for late-night contemplation',
+      description: 'A tribute to Zubeen Garg // Hymn music Production',
       videoId: 'TQeDesPD3U4', 
-      youtubeUrl: 'https://www.youtube.com/watch?v=YQHsXMglC9A'
+      youtubeUrl: 'https://www.youtube.com/watch?v=TQeDesPD3U4'
     },
     {
       id: '3',
-      title: 'URBAN ECHOES',
+      title: 'ANURAGI',
       artist: 'HYMNS',
-      description: 'The sound of the city captured in music',
+      description: 'ANURAGI- Official Release From- MUR AI GAN || Tushar Tez & N.K Sharma, Prabitra Bora, Swapnali Deka',
       videoId: 'VKnzxZkQCsg', 
-      youtubeUrl: 'https://www.youtube.com/watch?v=kJQP7kiw5Fk'
+      youtubeUrl: 'https://www.youtube.com/watch?v=VKnzxZkQCsg'
     },
     {
       id: '4',
-      title: 'SILENT WAVES',
+      title: 'Xendoor',
       artist: 'HYMNS',
-      description: 'Calm and meditative soundscapes',
+      description: 'Xendoor / Hymn music Production/ (official song )',
       videoId: 'qMyD8n5gZkM', 
-      youtubeUrl: 'https://www.youtube.com/watch?v=JGwWNGJdvx8'
+      youtubeUrl: 'https://www.youtube.com/watch?v=qMyD8n5gZkM'
     }
   ];
 
@@ -48,8 +48,7 @@ const Music: React.FC = () => {
     { name: 'YouTube Music', url: youtubeChannelUrl },
     { name: 'SoundCloud', url: 'https://soundcloud.com' }
   ];
-
-  // Helper function to get YouTube thumbnail URL
+ 
   const getYouTubeThumbnail = (videoId: string) => {
     return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
   };

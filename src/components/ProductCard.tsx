@@ -89,12 +89,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
         
         <div className="flex items-baseline gap-2">
           <p className="text-2xl font-bold text-foreground">
-            ${product.price.toFixed(2)}
+            ₹{product.price.toFixed(2)}
           </p>
           {product.price < 100 && (
             <>
               <p className="text-sm text-muted-foreground line-through">
-                ${(product.price * 1.3).toFixed(2)}
+                ₹{(product.price * 1.3).toFixed(2)}
               </p>
               <p className="text-sm font-semibold text-green-600">
                 23% off

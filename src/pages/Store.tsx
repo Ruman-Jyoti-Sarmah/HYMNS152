@@ -114,7 +114,7 @@ const Store: React.FC = () => {
   const placeOrder = () => {
     toast({
       title: "Order placed successfully",
-      description: `Your order of ${cartItems.length} items has been placed. Total: $${calculateTotal().toFixed(2)}`
+      description: `Your order of ${cartItems.length} items has been placed. Total: ₹${calculateTotal().toFixed(2)}`
     });
     clearCart();
   };

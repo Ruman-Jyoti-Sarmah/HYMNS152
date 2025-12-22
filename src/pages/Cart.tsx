@@ -155,7 +155,7 @@ const Cart: React.FC = () => {
                       </p>
                     )}
                     <p className="text-lg font-bold text-foreground">
-                      ${item.product?.price.toFixed(2)}
+                      ₹{item.product?.price.toFixed(2)}
                     </p>
                   </div>
                   <div className="flex flex-col items-end justify-between">
@@ -198,7 +198,7 @@ const Cart: React.FC = () => {
             <div className="flex justify-between items-center mb-6">
               <span className="text-xl font-semibold text-foreground">Total:</span>
               <span className="text-2xl font-bold text-foreground">
-                ${total.toFixed(2)}
+                ₹{total.toFixed(2)}
               </span>
             </div>
             <div className="flex flex-col xl:flex-row gap-4">

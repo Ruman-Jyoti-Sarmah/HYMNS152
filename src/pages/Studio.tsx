@@ -31,9 +31,9 @@ const Studio: React.FC = () => {
   ];
 
   const studioImages = [
-    'https://miaoda-site-img.s3cdn.medo.dev/images/9a82b266-d14f-4125-9809-b8f1d790ff7b.jpg',
-    'https://miaoda-site-img.s3cdn.medo.dev/images/333b4625-0de3-4e80-89a3-fb38a9c9eec2.jpg',
-    'https://miaoda-site-img.s3cdn.medo.dev/images/3151457a-cf2f-4255-afda-a2a263eb55a2.jpg',
+    './images/hymns-studio1.jpeg',
+    './images/hymns-studio2.jpeg',
+    './images/hymns-studio3.jpeg',
     'https://miaoda-site-img.s3cdn.medo.dev/images/153f309f-08a8-46da-94b7-52d47db312a3.jpg'
   ];
 
