@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ShoppingCart } from "lucide-react";
+import { Menu, X, ShoppingCart, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Header: React.FC = () => {
@@ -13,6 +13,7 @@ const Header: React.FC = () => {
   const navigation = [
     { path: '/dashboard', name: 'Dashboard' },
     { path: '/store', name: 'Store' },
+    { path: '/orders', name: 'Orders' },
     { path: '/music', name: 'Music' },
     { path: '/studio', name: 'Studio' },
     { path: '/pricing', name: 'Pricing' },
@@ -59,6 +60,11 @@ const Header: React.FC = () => {
                 </Button>
               </Link>
             ))}
+            <Link to="/wishlist">
+              <Button variant="ghost" size="icon" className="ml-2">
+                <Heart className="h-5 w-5" />
+              </Button>
+            </Link>
             <Link to="/cart">
               <Button variant="ghost" size="icon" className="ml-2">
                 <ShoppingCart className="h-5 w-5" />
@@ -102,6 +108,14 @@ const Header: React.FC = () => {
                 {item.name}
               </Link>
             ))}
+            <Link
+              to="/wishlist"
+              onClick={() => setIsMenuOpen(false)}
+              className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium text-foreground hover:bg-accent"
+            >
+              <Heart className="h-4 w-4" />
+              Wishlist
+            </Link>
             <Link
               to="/cart"
               onClick={() => setIsMenuOpen(false)}

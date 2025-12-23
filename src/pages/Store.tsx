@@ -114,19 +114,10 @@ const Store: React.FC = () => {
   const placeOrder = () => {
     toast({
       title: "Order placed successfully",
-      description: `Your order of ${cartItems.length} items has been placed. Total: ₹${calculateTotal().toFixed(2)}`
+      description: `Your order of ${cartItems.length} items has been placed. Total: ₹${cartItems.reduce((sum, item) => sum + (item.product?.price || 0) * item.quantity, 0).toFixed(2)}`
     });
     clearCart();
   };
-
-  const calculateTotal = () => {
-    return cartItems.reduce(
-      (sum, item) => sum + (item.product?.price || 0) * item.quantity,
-      0
-    );
-  };
-
-  const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const loadProducts = async () => {
     try {
@@ -345,6 +336,7 @@ const Store: React.FC = () => {
           </main>
         </div>
 
+
         {!isLoading && filteredProducts.length > 0 && (
           <div className="mt-16 p-8 xl:p-12 bg-card rounded-lg border border-border animate-fadeInUp animation-delay-600">
             <div className="max-w-3xl mx-auto text-center">
@@ -372,104 +364,6 @@ const Store: React.FC = () => {
           </div>
         )}
 
-        {/* Cart Summary Section */}
-        {cartItems.length > 0 && (
-          <div className="mt-12 animate-fadeInUp animation-delay-800">
-            <Card className="border-border">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <ShoppingCart className="h-6 w-6 text-primary" />
-                    <h2 className="text-xl font-semibold text-foreground">Your Cart</h2>
-                    <span className="text-sm text-muted-foreground">({cartItemCount} items)</span>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" onClick={clearCart}>
-                      Clear Cart
-                    </Button>
-                    <Button onClick={() => setIsCartOpen(!isCartOpen)}>
-                      {isCartOpen ? 'Hide Cart' : 'View Cart'}
-                    </Button>
-                  </div>
-                </div>
-
-                {isCartOpen && (
-                  <div className="space-y-4">
-                    {cartItems.map((item) => (
-                      <div key={item.id} className="flex items-center gap-4">
-                        <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted">
-                          <img
-                            src={item.product?.image_url || ''}
-                            alt={item.product?.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-foreground">{item.product?.name}</h3>
-                          {item.size && (
-                            <p className="text-sm text-muted-foreground">Size: {item.size}</p>
-                          )}
-                          <p className="text-lg font-bold text-foreground">
-                            ₹{item.product?.price.toFixed(2)}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => updateCartQuantity(item.id, item.quantity - 1)}
-                            disabled={item.quantity <= 1}
-                          >
-                            <Minus className="h-4 w-4" />
-                          </Button>
-                          <span className="w-12 text-center font-semibold">{item.quantity}</span>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => updateCartQuantity(item.id, item.quantity + 1)}
-                          >
-                            <Plus className="h-4 w-4" />
-                          </Button>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-bold text-foreground">
-                            ₹{((item.product?.price || 0) * item.quantity).toFixed(2)}
-                          </p>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => removeFromCart(item.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                <CardFooter className="p-0 mt-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Subtotal</p>
-                      <p className="text-2xl font-bold text-foreground">
-                        ₹{calculateTotal().toFixed(2)}
-                      </p>
-                    </div>
-                    <div className="flex gap-3">
-                      <Button variant="outline" onClick={() => setIsCartOpen(!isCartOpen)}>
-                        {isCartOpen ? 'Hide Cart' : 'View Cart'}
-                      </Button>
-                      <Button size="lg" onClick={placeOrder}>
-                        Place Order
-                      </Button>
-                    </div>
-                  </div>
-                </CardFooter>
-              </CardContent>
-            </Card>
-          </div>
-        )}
       </div>
     </div>
   );

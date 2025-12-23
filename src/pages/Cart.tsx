@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { cartApi, getUserId } from '@/db/api';
 import type { CartItemWithProduct } from '@/types/types';
+import { PlaceOrderButton } from '@/components/PlaceOrderButton';
 
 const Cart: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItemWithProduct[]>([]);
@@ -125,7 +126,7 @@ const Cart: React.FC = () => {
     <div className="min-h-screen py-12 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl xl:text-5xl font-bold text-foreground">
+          <h1 className="text-3xl xl:text-5xl font-bold text-black">
             Shopping Cart
           </h1>
           <Button variant="outline" onClick={clearCart}>
@@ -134,11 +135,11 @@ const Cart: React.FC = () => {
         </div>
 
         <div className="space-y-4 mb-8">
-          {cartItems.map((item) => (
-            <Card key={item.id}>
+          {cartItems.map((item, index) => (
+            <Card key={item.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
               <CardContent className="p-4 xl:p-6">
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-20 h-20 xl:w-24 xl:h-24 rounded-lg overflow-hidden bg-muted">
+                  <div className="flex-shrink-0 w-20 h-20 xl:w-24 xl:h-24 rounded-lg overflow-hidden bg-muted animate-pulse-once">
                     <img
                       src={item.product?.image_url || ''}
                       alt={item.product?.name}
@@ -207,12 +208,25 @@ const Cart: React.FC = () => {
                   Continue Shopping
                 </Button>
               </Link>
-              <Button className="flex-1">
-                Proceed to Checkout
-              </Button>
+              <PlaceOrderButton total={total} cartItems={cartItems} />
             </div>
           </CardContent>
         </Card>
+
+        {/* Fixed Bottom Action Bar */}
+        <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-800 shadow-[0_-10px_30px_-10px_rgba(0,0,0,0.5)] z-50">
+          <div className="max-w-4xl mx-auto px-4 py-4">
+            <div className="flex justify-between items-center">
+              <div className="flex flex-col">
+                <span className="text-sm text-gray-300 font-medium">Total</span>
+                <span className="text-2xl font-bold text-white">
+                  ₹{total.toFixed(2)}
+                </span>
+              </div>
+              <PlaceOrderButton total={total} cartItems={cartItems} />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

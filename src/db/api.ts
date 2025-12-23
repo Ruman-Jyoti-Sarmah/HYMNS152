@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import type { Product, CartItem, Message, CartItemWithProduct } from '@/types/types';
+import type { Product, CartItem, Message, CartItemWithProduct, WishlistItem, Review, Order, OrderItem, OrderWithItems } from '@/types/types';
 
 export const productsApi = {
   async getAll(): Promise<Product[]> {
@@ -161,6 +161,169 @@ export const messagesApi = {
         }
       )
       .subscribe();
+  }
+};
+
+export const wishlistApi = {
+  async getWishlist(userId: string): Promise<WishlistItem[]> {
+    const { data, error } = await supabase
+      .from('wishlists')
+      .select(`
+        *,
+        product:products(*)
+      `)
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async addToWishlist(userId: string, productId: string): Promise<void> {
+    const { error } = await supabase
+      .from('wishlists')
+      .insert({ user_id: userId, product_id: productId });
+
+    if (error) throw error;
+  },
+
+  async removeFromWishlist(userId: string, productId: string): Promise<void> {
+    const { error } = await supabase
+      .from('wishlists')
+      .delete()
+      .eq('user_id', userId)
+      .eq('product_id', productId);
+
+    if (error) throw error;
+  },
+
+  async isInWishlist(userId: string, productId: string): Promise<boolean> {
+    const { data, error } = await supabase
+      .from('wishlists')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('product_id', productId)
+      .maybeSingle();
+
+    if (error) throw error;
+    return !!data;
+  }
+};
+
+export const reviewsApi = {
+  async getProductReviews(productId: string): Promise<Review[]> {
+    const { data, error } = await supabase
+      .from('reviews')
+      .select('*')
+      .eq('product_id', productId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async addReview(userId: string, productId: string, rating: number, comment?: string): Promise<void> {
+    const { error } = await supabase
+      .from('reviews')
+      .insert({
+        user_id: userId,
+        product_id: productId,
+        rating,
+        comment
+      });
+
+    if (error) throw error;
+  },
+
+  async getUserReview(userId: string, productId: string): Promise<Review | null> {
+    const { data, error } = await supabase
+      .from('reviews')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('product_id', productId)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data;
+  }
+};
+
+export const ordersApi = {
+  async createOrder(userId: string, items: CartItemWithProduct[], shippingAddress: any, paymentMethod?: string): Promise<Order> {
+    const totalAmount = items.reduce((sum, item) => sum + (item.product?.price || 0) * item.quantity, 0);
+
+    const { data: orderData, error: orderError } = await supabase
+      .from('orders')
+      .insert({
+        user_id: userId,
+        total_amount: totalAmount,
+        shipping_address: shippingAddress,
+        payment_method: paymentMethod
+      })
+      .select()
+      .single();
+
+    if (orderError) throw orderError;
+
+    // Add order items
+    const orderItems = items.map(item => ({
+      order_id: orderData.id,
+      product_id: item.product_id,
+      quantity: item.quantity,
+      price: item.product?.price || 0,
+      size: item.size
+    }));
+
+    const { error: itemsError } = await supabase
+      .from('order_items')
+      .insert(orderItems);
+
+    if (itemsError) throw itemsError;
+
+    return orderData;
+  },
+
+  async getUserOrders(userId: string): Promise<OrderWithItems[]> {
+    const { data, error } = await supabase
+      .from('orders')
+      .select(`
+        *,
+        items:order_items(
+          *,
+          product:products(*)
+        )
+      `)
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getOrderById(orderId: string): Promise<OrderWithItems | null> {
+    const { data, error } = await supabase
+      .from('orders')
+      .select(`
+        *,
+        items:order_items(
+          *,
+          product:products(*)
+        )
+      `)
+      .eq('id', orderId)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data;
+  },
+
+  async updateOrderStatus(orderId: string, status: string): Promise<void> {
+    const { error } = await supabase
+      .from('orders')
+      .update({ status })
+      .eq('id', orderId);
+
+    if (error) throw error;
   }
 };
 
