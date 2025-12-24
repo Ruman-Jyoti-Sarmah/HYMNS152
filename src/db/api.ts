@@ -29,7 +29,41 @@ export const productsApi = {
       .select('*')
       .eq('category', category)
       .order('created_at', { ascending: false });
-    
+
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getRelatedProducts(productId: string, category: string, price: number, limit = 6): Promise<Product[]> {
+    // Get products from same category, similar price range, excluding current product
+    const priceRange = 500; // ±₹500 price range
+    const minPrice = Math.max(0, price - priceRange);
+    const maxPrice = price + priceRange;
+
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .neq('id', productId) // Exclude current product
+      .eq('category', category) // Same category
+      .gte('price', minPrice) // Price range
+      .lte('price', maxPrice)
+      .gt('stock', 0) // In stock only
+      .order('created_at', { ascending: false })
+      .limit(limit);
+
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getSimilarProducts(limit = 8): Promise<Product[]> {
+    // Get popular/recent products for general recommendations
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .gt('stock', 0)
+      .order('created_at', { ascending: false })
+      .limit(limit);
+
     if (error) throw error;
     return Array.isArray(data) ? data : [];
   }

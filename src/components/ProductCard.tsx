@@ -1,42 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { ShoppingCart, Star, Heart } from 'lucide-react';
+import React, { useState } from 'react';
+import { ShoppingCart, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { useWishlist } from '@/hooks/use-wishlist';
 import type { Product } from '@/types/types';
 import { cartApi, getUserId } from '@/db/api';
 
 interface ProductCardProps {
   product: Product;
   onAddToCart?: () => void;
-  showWishlist?: boolean;
+  isSelected?: boolean;
+  onSelect?: (productId: string) => void;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, showWishlist = true }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, isSelected = false, onSelect }) => {
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [isAdding, setIsAdding] = useState(false);
-  const { wishlist, isLoading, toggleWishlist, isInWishlist } = useWishlist();
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (showWishlist) {
-      // Wishlist state is managed by the hook
-    }
-  }, [product.id, showWishlist, wishlist]);
-
-  const handleToggleWishlist = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (isLoading) return;
-
-    try {
-      await toggleWishlist(product);
-    } catch (error) {
-      // Error handling is done in the hook
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Only handle selection if onSelect is provided and not clicking on the Add to Cart button
+    if (onSelect && !(e.target as HTMLElement).closest('button')) {
+      e.preventDefault();
+      onSelect(product.id);
     }
   };
 
@@ -76,8 +64,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, 
   const reviewCount = Math.floor(Math.random() * 500) + 100;
 
   return (
-    <Link to={`/product/${product.id}`} className="block">
-      <Card className="overflow-hidden group hover:shadow-2xl transition-all duration-500 border-border hover:border-primary/50 cursor-pointer">
+    <div onClick={handleCardClick} className="block">
+      <Card className={`overflow-hidden group hover:shadow-2xl transition-all duration-500 border-border hover:border-primary/50 cursor-pointer ${isSelected ? 'ring-2 ring-primary' : ''}`}>
         <div className="relative aspect-square overflow-hidden bg-muted">
           <img
             src={product.image_url || ''}
@@ -94,19 +82,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, 
               Only {product.stock} left
             </div>
           )}
-          {showWishlist && (
-            <button
-              onClick={handleToggleWishlist}
-              disabled={isLoading}
-              className="absolute top-2 right-2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg transition-colors disabled:opacity-50"
-              title={isInWishlist(product.id) ? "Remove from wishlist" : "Add to wishlist"}
-            >
-              <Heart className={`h-4 w-4 ${isInWishlist(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
-            </button>
-          )}
+
         </div>
         <CardContent className="p-4">
-          <h3 className="font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors min-h-[3rem]">
+          <h3 className="font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors min-h-[3rem] text-orange-600">
             {product.name}
           </h3>
           
@@ -125,7 +104,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, 
           </p>
           
           <div className="flex items-baseline gap-2">
-            <p className="text-2xl font-bold text-foreground">
+            <p className="text-2xl font-bold text-orange-600">
               ₹{product.price.toFixed(2)}
             </p>
             {product.price < 100 && (
@@ -166,6 +145,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, 
           </Button>
         </CardFooter>
       </Card>
-    </Link>
+      {onSelect ? (
+        <Link to={`/product/${product.id}`} className="absolute inset-0 z-10" />
+      ) : (
+        <Link to={`/product/${product.id}`} className="block" />
+      )}
+    </div>
   );
 };

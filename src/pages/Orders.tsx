@@ -22,10 +22,12 @@ const Orders: React.FC = () => {
       const data = await ordersApi.getUserOrders(getUserId());
       setOrders(data);
     } catch (error) {
+      console.error('Failed to load orders from API:', error);
+      // Fallback to empty orders if API fails (database tables might not exist yet)
+      setOrders([]);
       toast({
-        title: "Error",
-        description: "Failed to load orders",
-        variant: "destructive"
+        title: "No orders found",
+        description: "Your order history will appear here once you make a purchase",
       });
     } finally {
       setIsLoading(false);

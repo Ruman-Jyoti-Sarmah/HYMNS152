@@ -22,6 +22,7 @@ const Store: React.FC = () => {
   const [showFilters, setShowFilters] = useState(true);
   const [cartItems, setCartItems] = useState<CartItemWithProduct[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [selectedProducts, setSelectedProducts] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   useEffect(() => {
@@ -170,6 +171,18 @@ const Store: React.FC = () => {
   };
 
   const categories = ['all', ...Array.from(new Set(products.map(p => p.category)))];
+
+  const handleProductSelect = (productId: string) => {
+    setSelectedProducts(prev => {
+      const newSelected = new Set(prev);
+      if (newSelected.has(productId)) {
+        newSelected.delete(productId);
+      } else {
+        newSelected.add(productId);
+      }
+      return newSelected;
+    });
+  };
 
   const clearFilters = () => {
     setSearchQuery('');
@@ -326,6 +339,8 @@ const Store: React.FC = () => {
                         <ProductCard
                           product={product}
                           onAddToCart={loadProducts}
+                          isSelected={selectedProducts.has(product.id)}
+                          onSelect={handleProductSelect}
                         />
                       </div>
                     ))}

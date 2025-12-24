@@ -109,7 +109,7 @@ const Cart: React.FC = () => {
           <h1 className="text-3xl font-bold text-black mb-4">
             Your cart is empty
           </h1>
-          <p className="text-muted-foreground mb-8">
+          <p className="text-black mb-8">
             Add some items to your cart to get started
           </p>
           <Link to="/store">

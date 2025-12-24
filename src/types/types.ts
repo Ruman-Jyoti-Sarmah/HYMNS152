@@ -4,10 +4,12 @@ export interface Product {
   description: string | null;
   price: number;
   image_url: string | null;
+  image_urls?: string[] | null; // Array of up to 4 images
   category: string;
   sizes: string[] | null;
   stock: number;
   created_at: string;
+  related_products?: Product[]; // Related/similar products
 }
 
 export interface CartItem {

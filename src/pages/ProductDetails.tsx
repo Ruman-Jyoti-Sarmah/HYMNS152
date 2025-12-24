@@ -21,15 +21,15 @@ const ProductDetails: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const { toast } = useToast();
 
-  // Mock additional product images (in real app, this would come from database)
-  const productImages = product ? [
-    product.image_url || '',
-    'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500',
-    'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=500',
-    'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=500'
-  ] : [];
+  // Use product images from database, fallback to single image if no array
+  const productImages = product ? (
+    product.image_urls && product.image_urls.length > 0
+      ? product.image_urls.slice(0, 4) // Limit to 4 images max
+      : [product.image_url || ''].filter(Boolean)
+  ) : [];
 
   useEffect(() => {
     if (id) {
@@ -41,6 +41,11 @@ const ProductDetails: React.FC = () => {
     try {
       const data = await productsApi.getById(id!);
       setProduct(data);
+
+      // Load related products after getting the main product
+      if (data) {
+        await loadRelatedProducts(data);
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -50,6 +55,28 @@ const ProductDetails: React.FC = () => {
       navigate('/store');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const loadRelatedProducts = async (currentProduct: Product) => {
+    try {
+      const related = await productsApi.getRelatedProducts(
+        currentProduct.id,
+        currentProduct.category,
+        currentProduct.price
+      );
+      setRelatedProducts(related);
+    } catch (error) {
+      console.error('Failed to load related products:', error);
+      // If no related products found, try to get general similar products
+      try {
+        const similar = await productsApi.getSimilarProducts(6);
+        // Filter out the current product
+        const filtered = similar.filter(p => p.id !== currentProduct.id);
+        setRelatedProducts(filtered.slice(0, 6));
+      } catch (fallbackError) {
+        console.error('Failed to load fallback products:', fallbackError);
+      }
     }
   };
 
@@ -218,7 +245,7 @@ const ProductDetails: React.FC = () => {
             <div>
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h1 className="text-3xl font-bold text-foreground mb-2">{product.name}</h1>
+                  <h1 className="text-3xl font-bold text-black mb-2">{product.name}</h1>
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1">
                       <div className="flex">
@@ -249,7 +276,7 @@ const ProductDetails: React.FC = () => {
               </div>
 
               <div className="flex items-baseline gap-3 mb-6">
-                <span className="text-4xl font-bold text-foreground">₹{product.price.toFixed(2)}</span>
+                <span className="text-4xl font-bold text-orange-600">₹{product.price.toFixed(2)}</span>
                 <span className="text-lg text-muted-foreground line-through">₹{(product.price * 1.3).toFixed(2)}</span>
                 <Badge variant="destructive" className="text-sm">23% off</Badge>
               </div>
@@ -369,6 +396,56 @@ const ProductDetails: React.FC = () => {
             ))}
           </div>
         </div>
+
+        {/* Related Products Section */}
+        {relatedProducts.length > 0 && (
+          <div className="mt-16">
+            <h2 className="text-2xl font-bold text-foreground mb-6">You Might Also Like</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {relatedProducts.map((relatedProduct) => (
+                <Card key={relatedProduct.id} className="overflow-hidden group hover:shadow-2xl transition-all duration-500 border-border hover:border-primary/50 cursor-pointer">
+                  <div className="relative aspect-square overflow-hidden bg-muted">
+                    <img
+                      src={relatedProduct.image_url || '/images/placeholder.jpg'}
+                      alt={relatedProduct.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    {relatedProduct.stock === 0 && (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                        <span className="text-white font-semibold text-sm">Out of Stock</span>
+                      </div>
+                    )}
+                  </div>
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors text-orange-600 text-sm">
+                      {relatedProduct.name}
+                    </h3>
+                    <div className="flex items-baseline gap-2 mb-3">
+                      <p className="text-lg font-bold text-orange-600">
+                        ₹{relatedProduct.price.toFixed(2)}
+                      </p>
+                      {relatedProduct.price < 100 && (
+                        <p className="text-xs font-semibold text-green-600">
+                          23% off
+                        </p>
+                      )}
+                    </div>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/product/${relatedProduct.id}`);
+                      }}
+                      className="w-full text-sm"
+                      size="sm"
+                    >
+                      View Details
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

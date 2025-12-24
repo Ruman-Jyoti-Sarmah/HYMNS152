@@ -15,7 +15,6 @@ import Music from '@/pages/Music';
 import Pricing from '@/pages/Pricing';
 import Store from '@/pages/Store';
 import ProductDetails from '@/pages/ProductDetails';
-import Wishlist from '@/pages/Wishlist';
 import Orders from '@/pages/Orders';
 import Studio from '@/pages/Studio';
 import Cart from '@/pages/Cart';
@@ -56,10 +55,7 @@ const router = createBrowserRouter([
         path: '/product/:id',
         element: <ProtectedRoute requireAuth={true}><ProductDetails /></ProtectedRoute>,
       },
-      {
-        path: '/wishlist',
-        element: <ProtectedRoute requireAuth={true}><Wishlist /></ProtectedRoute>,
-      },
+
       {
         path: '/orders',
         element: <ProtectedRoute requireAuth={true}><Orders /></ProtectedRoute>,

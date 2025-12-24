@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useToast } from './use-toast';
+import { wishlistApi } from '@/db/api';
 import type { Product } from '@/types/types';
 
 interface WishlistItem {
@@ -46,37 +47,25 @@ export const useWishlist = () => {
     setIsLoading(true);
     try {
       const userId = localStorage.getItem('hymns_user_id') || crypto.randomUUID();
-      
+
       // Try API first
       try {
-        const response = await fetch('/api/wishlist', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            user_id: userId,
-            product_id: product.id
-          })
-        });
+        await wishlistApi.addToWishlist(userId, product.id);
+        const newItem: WishlistItem = {
+          id: crypto.randomUUID(),
+          product_id: product.id,
+          created_at: new Date().toISOString()
+        };
 
-        if (response.ok) {
-          const newItem: WishlistItem = {
-            id: crypto.randomUUID(),
-            product_id: product.id,
-            created_at: new Date().toISOString()
-          };
-          
-          const updatedWishlist = [...wishlist, newItem];
-          setWishlist(updatedWishlist);
-          saveWishlistToStorage(updatedWishlist);
-          
-          toast({
-            title: "Added to wishlist",
-            description: `${product.name} has been added to your wishlist`
-          });
-          return;
-        }
+        const updatedWishlist = [...wishlist, newItem];
+        setWishlist(updatedWishlist);
+        saveWishlistToStorage(updatedWishlist);
+
+        toast({
+          title: "Added to wishlist",
+          description: `${product.name} has been added to your wishlist`
+        });
+        return;
       } catch (apiError) {
         console.log('API wishlist failed, falling back to localStorage:', apiError);
       }
@@ -84,18 +73,18 @@ export const useWishlist = () => {
       // Fallback to localStorage
       const existingItems = getWishlistFromStorage();
       const alreadyExists = existingItems.some(item => item.product_id === product.id);
-      
+
       if (!alreadyExists) {
         const newItem: WishlistItem = {
           id: crypto.randomUUID(),
           product_id: product.id,
           created_at: new Date().toISOString()
         };
-        
+
         const updatedWishlist = [...existingItems, newItem];
         setWishlist(updatedWishlist);
         saveWishlistToStorage(updatedWishlist);
-        
+
         toast({
           title: "Added to wishlist",
           description: `${product.name} has been added to your wishlist`
@@ -124,28 +113,19 @@ export const useWishlist = () => {
     setIsLoading(true);
     try {
       const userId = localStorage.getItem('hymns_user_id') || crypto.randomUUID();
-      
+
       // Try API first
       try {
-        const response = await fetch(`/api/wishlist/${productId}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ user_id: userId })
-        });
+        await wishlistApi.removeFromWishlist(userId, productId);
+        const updatedWishlist = wishlist.filter(item => item.product_id !== productId);
+        setWishlist(updatedWishlist);
+        saveWishlistToStorage(updatedWishlist);
 
-        if (response.ok) {
-          const updatedWishlist = wishlist.filter(item => item.product_id !== productId);
-          setWishlist(updatedWishlist);
-          saveWishlistToStorage(updatedWishlist);
-          
-          toast({
-            title: "Removed from wishlist",
-            description: `${productName} has been removed from your wishlist`
-          });
-          return;
-        }
+        toast({
+          title: "Removed from wishlist",
+          description: `${productName} has been removed from your wishlist`
+        });
+        return;
       } catch (apiError) {
         console.log('API wishlist remove failed, falling back to localStorage:', apiError);
       }
@@ -153,10 +133,10 @@ export const useWishlist = () => {
       // Fallback to localStorage
       const existingItems = getWishlistFromStorage();
       const updatedWishlist = existingItems.filter(item => item.product_id !== productId);
-      
+
       setWishlist(updatedWishlist);
       saveWishlistToStorage(updatedWishlist);
-      
+
       toast({
         title: "Removed from wishlist",
         description: `${productName} has been removed from your wishlist`
