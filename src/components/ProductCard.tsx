@@ -5,8 +5,9 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { useWishlist } from '@/hooks/use-wishlist';
 import type { Product } from '@/types/types';
-import { cartApi, wishlistApi, getUserId } from '@/db/api';
+import { cartApi, getUserId } from '@/db/api';
 
 interface ProductCardProps {
   product: Product;
@@ -17,56 +18,25 @@ interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, showWishlist = true }) => {
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [isAdding, setIsAdding] = useState(false);
-  const [isWishlisted, setIsWishlisted] = useState(false);
-  const [isLoadingWishlist, setIsLoadingWishlist] = useState(false);
+  const { wishlist, isLoading, toggleWishlist, isInWishlist } = useWishlist();
   const { toast } = useToast();
 
   useEffect(() => {
     if (showWishlist) {
-      checkWishlistStatus();
+      // Wishlist state is managed by the hook
     }
-  }, [product.id, showWishlist]);
+  }, [product.id, showWishlist, wishlist]);
 
-  const checkWishlistStatus = async () => {
-    try {
-      const inWishlist = await wishlistApi.isInWishlist(getUserId(), product.id);
-      setIsWishlisted(inWishlist);
-    } catch (error) {
-      // Silently fail for wishlist check
-    }
-  };
-
-  const toggleWishlist = async (e: React.MouseEvent) => {
+  const handleToggleWishlist = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (isLoadingWishlist) return;
+    if (isLoading) return;
 
-    setIsLoadingWishlist(true);
     try {
-      if (isWishlisted) {
-        await wishlistApi.removeFromWishlist(getUserId(), product.id);
-        setIsWishlisted(false);
-        toast({
-          title: "Removed from wishlist",
-          description: "Item removed from your wishlist"
-        });
-      } else {
-        await wishlistApi.addToWishlist(getUserId(), product.id);
-        setIsWishlisted(true);
-        toast({
-          title: "Added to wishlist",
-          description: "Item added to your wishlist"
-        });
-      }
+      await toggleWishlist(product);
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update wishlist",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoadingWishlist(false);
+      // Error handling is done in the hook
     }
   };
 
@@ -126,11 +96,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, 
           )}
           {showWishlist && (
             <button
-              onClick={toggleWishlist}
-              disabled={isLoadingWishlist}
+              onClick={handleToggleWishlist}
+              disabled={isLoading}
               className="absolute top-2 right-2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg transition-colors disabled:opacity-50"
+              title={isInWishlist(product.id) ? "Remove from wishlist" : "Add to wishlist"}
             >
-              <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+              <Heart className={`h-4 w-4 ${isInWishlist(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
             </button>
           )}
         </div>

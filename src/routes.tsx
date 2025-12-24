@@ -19,6 +19,7 @@ import Wishlist from '@/pages/Wishlist';
 import Orders from '@/pages/Orders';
 import Studio from '@/pages/Studio';
 import Cart from '@/pages/Cart';
+import Checkout from '@/pages/Checkout';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 
 const router = createBrowserRouter([
@@ -86,6 +87,10 @@ const router = createBrowserRouter([
       {
         path: '/cart',
         element: <ProtectedRoute requireAuth={false} redirectIfAuth={false}><Cart /></ProtectedRoute>,
+      },
+      {
+        path: '/checkout',
+        element: <ProtectedRoute requireAuth={false} redirectIfAuth={false}><Checkout /></ProtectedRoute>,
       },
     ],
   },
