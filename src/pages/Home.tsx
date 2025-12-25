@@ -29,7 +29,7 @@ const Home: React.FC = () => {
       <section className="relative h-[70vh] xl:h-[80vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background z-10" />
         <img
-          src="https://miaoda-site-img.s3cdn.medo.dev/images/097e974f-bcfe-402d-817c-8de249c49730.jpg"
+          src="/images/hymns-hero-home.png"
           alt="HYMNS Hero"
           className="absolute inset-0 w-full h-full object-cover animate-fadeIn"
         />

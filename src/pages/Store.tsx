@@ -1,6 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ProductCard } from '../components/ProductCard';
 import { products } from '../data/products';
+import { cartApi, getUserId } from '../db/api';
+import { useToast } from '../hooks/use-toast';
 
 interface Product {
   id: string;
@@ -15,7 +18,33 @@ interface Product {
 }
 
 const Store = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   console.log('Store: Rendering Store component');
+
+  const handleBuyNow = async (product: Product) => {
+    try {
+      // Add product to cart
+      const userId = getUserId();
+      await cartApi.addToCart(userId, product.id, 1); // Add 1 quantity
+
+      toast({
+        title: "Product added to cart",
+        description: "Redirecting to checkout...",
+      });
+
+      // Navigate to checkout
+      navigate('/checkout');
+    } catch (error) {
+      console.error('Failed to add product to cart:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add product to cart. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
 
   // Convert AdminProduct to Product interface for ProductCard
   const displayProducts: Product[] = products.map(adminProduct => ({
@@ -44,7 +73,7 @@ const Store = () => {
 
         <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
           {displayProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} onBuyNow={handleBuyNow} />
           ))}
         </div>
 

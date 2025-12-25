@@ -16,9 +16,18 @@ interface Product {
 
 interface ProductCardProps {
   product: Product;
+  onBuyNow?: (product: Product) => void;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ product, onBuyNow }) => {
+  const handleBuyNow = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onBuyNow) {
+      onBuyNow(product);
+    }
+  };
+
   return (
     <Link to={`/product/${product.id}`} className="block">
       <div
@@ -70,6 +79,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               Add to Cart
             </button>
             <button
+              onClick={handleBuyNow}
               className="w-full py-2 px-4 rounded text-sm font-medium text-white transition-colors hover:opacity-90"
               style={{ backgroundColor: '#FB641B' }}
             >
