@@ -42,7 +42,7 @@ const About: React.FC = () => {
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 xl:gap-12 items-center">
             <div className="aspect-video xl:aspect-square overflow-hidden rounded-lg bg-muted">
               <img
-                src="https://miaoda-site-img.s3cdn.medo.dev/images/4c854257-4b94-4d3f-a2f0-ed1924d89c6e.jpg"
+                src="/images/hymns-hero-home.png"
                 alt="HYMNS Team"
                 className="w-full h-full object-cover"
               />
