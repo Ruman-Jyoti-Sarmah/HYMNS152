@@ -143,7 +143,7 @@ const Cart: React.FC = () => {
                     <img
                       src={item.product?.image_url || ''}
                       alt={item.product?.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                     />
                   </div>
                   <div className="flex-1 min-w-0">

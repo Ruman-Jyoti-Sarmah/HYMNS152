@@ -21,12 +21,18 @@ interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <Link to={`/product/${product.id}`} className="block">
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
-        <div className="aspect-square overflow-hidden">
+      <div
+        className="bg-white overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+        style={{
+          borderRadius: '14px',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+        }}
+      >
+        <div className="aspect-square overflow-hidden" style={{ borderRadius: '14px 14px 0 0' }}>
           <img
             src={product.thumbnail}
             alt={product.title}
-            className="w-full h-auto object-cover hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-contain"
             onError={(e) => {
               (e.target as HTMLImageElement).src = '/images/hymns-logo.jpg';
             }}
@@ -34,24 +40,41 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
 
         <div className="p-4">
-          <h3 className="font-semibold text-lg mb-2 line-clamp-2 text-gray-800">
+          <h3 className="font-bold text-lg mb-2 line-clamp-2" style={{ color: '#212121' }}>
             {product.title}
           </h3>
 
-          <p className="text-sm text-gray-500 mb-2">{product.brand}</p>
+          <p className="text-sm mb-3" style={{ color: '#757575' }}>{product.brand}</p>
 
           <div className="flex items-center gap-2 mb-3">
             <div className="flex items-center gap-1">
-              <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-              <span className="text-sm font-medium">{product.rating}</span>
+              <Star className="h-4 w-4 fill-current" style={{ color: '#388E3C' }} />
+              <span className="text-sm font-medium" style={{ color: '#212121' }}>{product.rating}</span>
             </div>
-            <span className="text-sm text-gray-500">({Math.floor(Math.random() * 500) + 100})</span>
+            <span className="text-sm" style={{ color: '#757575' }}>
+              ({Math.floor(Math.random() * 500) + 100})
+            </span>
           </div>
 
-          <div className="flex items-baseline gap-2 mb-3">
-            <span className="text-xl font-bold text-green-600">₹{product.price}</span>
-            <span className="text-sm text-gray-500 line-through">₹{product.originalPrice}</span>
-            <span className="text-sm font-semibold text-red-500">{product.discount}% off</span>
+          <div className="flex items-baseline gap-2 mb-4">
+            <span className="text-xl font-bold" style={{ color: '#212121' }}>₹{product.price}</span>
+            <span className="text-sm line-through" style={{ color: '#878787' }}>₹{product.originalPrice}</span>
+            <span className="text-sm font-semibold" style={{ color: '#E53935' }}>{product.discount}% off</span>
+          </div>
+
+          <div className="space-y-2">
+            <button
+              className="w-full py-2 px-4 rounded text-sm font-medium transition-colors hover:opacity-90"
+              style={{ backgroundColor: '#FFD814', color: '#111' }}
+            >
+              Add to Cart
+            </button>
+            <button
+              className="w-full py-2 px-4 rounded text-sm font-medium text-white transition-colors hover:opacity-90"
+              style={{ backgroundColor: '#FB641B' }}
+            >
+              Buy Now
+            </button>
           </div>
         </div>
       </div>

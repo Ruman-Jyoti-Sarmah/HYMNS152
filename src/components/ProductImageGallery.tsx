@@ -29,7 +29,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images
         <img
           src={selectedImage}
           alt={title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain"
           onError={(e) => {
             (e.target as HTMLImageElement).src = '/images/hymns-logo.jpg';
           }}
@@ -52,7 +52,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images
               <img
                 src={image}
                 alt={`${title} ${index + 1}`}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = '/images/hymns-logo.jpg';
                 }}

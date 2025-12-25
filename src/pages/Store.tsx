@@ -31,8 +31,8 @@ const Store = () => {
   }));
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 overflow-x-hidden">
-      <div className="max-w-full mx-auto px-4">
+    <div className="min-h-screen py-8" style={{ backgroundColor: '#F6F7F9' }}>
+      <div className="max-w-[1200px] mx-auto px-4">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
             HYMNS Store
@@ -42,7 +42,7 @@ const Store = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6">
+        <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
           {displayProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
