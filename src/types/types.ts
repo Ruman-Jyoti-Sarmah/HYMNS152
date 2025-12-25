@@ -39,7 +39,7 @@ export interface Message {
 }
 
 export interface CartItemWithProduct extends CartItem {
-  product: Product;
+  product?: Product;
 }
 
 export interface WishlistItem {
@@ -53,10 +53,13 @@ export interface WishlistItem {
 export interface Review {
   id: string;
   user_id: string;
+  user_name: string;
   product_id: string;
   rating: number;
-  comment: string | null;
+  title: string;
+  comment: string;
   created_at: string;
+  verified_purchase?: boolean;
 }
 
 export interface Order {
