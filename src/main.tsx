@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App.tsx";
 import { AppWrapper } from "./components/common/PageMeta.tsx";
 import { Router } from "./routes";
+import "./utils/imageUtils"; // Load image utilities globally
 
 console.log('main.tsx: Starting application...');
 

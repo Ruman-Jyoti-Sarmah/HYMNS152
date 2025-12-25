@@ -1,155 +1,60 @@
-import React, { useState } from 'react';
-import { ShoppingCart, Star } from 'lucide-react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
-import type { Product } from '@/types/types';
-import { cartApi, getUserId } from '@/db/api';
+import { Star } from 'lucide-react';
+
+interface Product {
+  id: string;
+  title: string;
+  brand: string;
+  price: number;
+  originalPrice: number;
+  discount: number;
+  rating: number;
+  thumbnail: string;
+  images: string[];
+}
 
 interface ProductCardProps {
   product: Product;
-  onAddToCart?: () => void;
-  isSelected?: boolean;
-  onSelect?: (productId: string) => void;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, isSelected = false, onSelect }) => {
-  const [selectedSize, setSelectedSize] = useState<string>('');
-  const [isAdding, setIsAdding] = useState(false);
-  const { toast } = useToast();
-
-  const handleCardClick = (e: React.MouseEvent) => {
-    // Only handle selection if onSelect is provided and not clicking on the Add to Cart button
-    if (onSelect && !(e.target as HTMLElement).closest('button')) {
-      e.preventDefault();
-      onSelect(product.id);
-    }
-  };
-
-  const handleAddToCart = async (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigation to product details
-    e.stopPropagation();
-
-    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
-      toast({
-        title: "Please select a size",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsAdding(true);
-    try {
-      const userId = getUserId();
-      await cartApi.addToCart(userId, product.id, 1, selectedSize);
-      toast({
-        title: "Added to cart",
-        description: `${product.name} has been added to your cart`
-      });
-      onAddToCart?.();
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to add item to cart",
-        variant: "destructive"
-      });
-    } finally {
-      setIsAdding(false);
-    }
-  };
-
-  const rating = 4.5;
-  const reviewCount = Math.floor(Math.random() * 500) + 100;
-
+export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
-    <div onClick={handleCardClick} className="block">
-      <Card className={`overflow-hidden group hover:shadow-2xl transition-all duration-500 border-border hover:border-primary/50 cursor-pointer ${isSelected ? 'ring-2 ring-primary' : ''}`}>
-        <div className="relative aspect-square overflow-hidden bg-muted">
+    <Link to={`/product/${product.id}`} className="block">
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <div className="aspect-square overflow-hidden">
           <img
-            src={product.image_url || ''}
-            alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            src={product.thumbnail}
+            alt={product.title}
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = '/images/hymns-logo.jpg';
+            }}
           />
-          {product.stock === 0 && (
-            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-              <span className="text-white font-semibold text-lg">Out of Stock</span>
-            </div>
-          )}
-          {product.stock > 0 && product.stock < 5 && (
-            <div className="absolute top-2 left-2 bg-destructive text-destructive-foreground px-2 py-1 rounded text-xs font-semibold">
-              Only {product.stock} left
-            </div>
-          )}
-
         </div>
-        <CardContent className="p-4">
-          <h3 className="font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors min-h-[3rem] text-orange-600">
-            {product.name}
+
+        <div className="p-4">
+          <h3 className="font-semibold text-lg mb-2 line-clamp-2 text-gray-800">
+            {product.title}
           </h3>
-          
-          <div className="flex items-center gap-2 mb-2">
-            <div className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded">
-              <span className="text-sm font-semibold text-foreground">{rating}</span>
-              <Star className="h-3 w-3 text-primary fill-primary" />
+
+          <p className="text-sm text-gray-500 mb-2">{product.brand}</p>
+
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-1">
+              <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+              <span className="text-sm font-medium">{product.rating}</span>
             </div>
-            <span className="text-xs text-muted-foreground">
-              ({reviewCount.toLocaleString()})
-            </span>
+            <span className="text-sm text-gray-500">({Math.floor(Math.random() * 500) + 100})</span>
           </div>
 
-          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-            {product.description}
-          </p>
-          
-          <div className="flex items-baseline gap-2">
-            <p className="text-2xl font-bold text-orange-600">
-              ₹{product.price.toFixed(2)}
-            </p>
-            {product.price < 100 && (
-              <>
-                <p className="text-sm text-muted-foreground line-through">
-                  ₹{(product.price * 1.3).toFixed(2)}
-                </p>
-                <p className="text-sm font-semibold text-green-600">
-                  23% off
-                </p>
-              </>
-            )}
+          <div className="flex items-baseline gap-2 mb-3">
+            <span className="text-xl font-bold text-green-600">₹{product.price}</span>
+            <span className="text-sm text-gray-500 line-through">₹{product.originalPrice}</span>
+            <span className="text-sm font-semibold text-red-500">{product.discount}% off</span>
           </div>
-        </CardContent>
-        <CardFooter className="p-4 pt-0 flex flex-col gap-2">
-          {product.sizes && product.sizes.length > 0 && (
-            <Select value={selectedSize} onValueChange={setSelectedSize}>
-              <SelectTrigger className="h-10">
-                <SelectValue placeholder="Select size" />
-              </SelectTrigger>
-              <SelectContent>
-                {product.sizes.map((size) => (
-                  <SelectItem key={size} value={size}>
-                    Size {size}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-          <Button
-            onClick={handleAddToCart}
-            disabled={isAdding || product.stock === 0}
-            className="w-full h-11 hover:scale-105 transition-transform duration-300"
-            size="lg"
-          >
-            <ShoppingCart className="h-5 w-5 mr-2" />
-            {product.stock === 0 ? 'Out of Stock' : isAdding ? 'Adding...' : 'Add to Cart'}
-          </Button>
-        </CardFooter>
-      </Card>
-      {onSelect ? (
-        <Link to={`/product/${product.id}`} className="absolute inset-0 z-10" />
-      ) : (
-        <Link to={`/product/${product.id}`} className="block" />
-      )}
-    </div>
+        </div>
+      </div>
+    </Link>
   );
 };

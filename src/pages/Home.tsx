@@ -13,7 +13,7 @@ const Home: React.FC = () => {
       title: 'Original Music',
       description: 'Stream our latest tracks and albums',
       link: '/music',
-      image: 'https://miaoda-site-img.s3cdn.medo.dev/images/153f309f-08a8-46da-94b7-52d47db312a3.jpg'
+      image: '/images/hymns-studio3.jpeg'
     },
     {
       icon: Mic2,

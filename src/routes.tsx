@@ -19,7 +19,9 @@ import Orders from '@/pages/Orders';
 import Studio from '@/pages/Studio';
 import Cart from '@/pages/Cart';
 import Checkout from '@/pages/Checkout';
+import AdminPanel from '@/components/AdminPanel';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
+import ImageManagementDemo from '@/components/ImageManagementDemo';
 
 const router = createBrowserRouter([
   {
@@ -49,11 +51,11 @@ const router = createBrowserRouter([
       },
       {
         path: '/store',
-        element: <ProtectedRoute requireAuth={true}><Store /></ProtectedRoute>,
+        element: <ProtectedRoute requireAuth={false} redirectIfAuth={false}><Store /></ProtectedRoute>,
       },
       {
         path: '/product/:id',
-        element: <ProtectedRoute requireAuth={true}><ProductDetails /></ProtectedRoute>,
+        element: <ProtectedRoute requireAuth={false} redirectIfAuth={false}><ProductDetails /></ProtectedRoute>,
       },
 
       {
@@ -88,6 +90,14 @@ const router = createBrowserRouter([
         path: '/checkout',
         element: <ProtectedRoute requireAuth={false} redirectIfAuth={false}><Checkout /></ProtectedRoute>,
       },
+      {
+        path: '/admin',
+        element: <AdminPanel />,
+      },
+      // {
+      //   path: '/image-demo',
+      //   element: <ImageManagementDemo />,
+      // },
     ],
   },
 ]);

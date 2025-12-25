@@ -1,10 +1,18 @@
+export interface ProductVariant {
+  color: string;
+  color_code: string; // Hex color code
+  images: string[]; // Array of images for this color variant
+  stock: number;
+}
+
 export interface Product {
   id: string;
   name: string;
   description: string | null;
   price: number;
   image_url: string | null;
-  image_urls?: string[] | null; // Array of up to 4 images
+  images?: string[] | null; // Array of images
+  variants?: ProductVariant[] | null; // Color variants with images
   category: string;
   sizes: string[] | null;
   stock: number;

@@ -284,3 +284,60 @@ All colors MUST be HSL.
 .animate-pulse-once {
   animation: pulse-once 1s ease-in-out;
 }
+
+/* Product Image Gallery */
+.product-image-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.main-product-image {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  max-height: 500px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.product-thumbnails {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.thumbnail {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  transition: border-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.thumbnail:hover {
+  border-color: #d1d5db;
+}
+
+.thumbnail.active {
+  border-color: #ff7a00;
+  box-shadow: 0 0 0 2px rgba(255, 122, 0, 0.2);
+}
+
+.product-thumbnails img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 6px;
+}
+
+.product-thumbnails img.active {
+  border-color: #ff7a00;
+}
