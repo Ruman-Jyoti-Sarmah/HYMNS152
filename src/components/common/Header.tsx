@@ -34,13 +34,13 @@ const Header: React.FC = () => {
         <div className="flex justify-between items-center h-16 xl:h-20">
           <Link to="/" className="flex items-center gap-2 xl:gap-3">
             <div className="w-10 h-10 xl:w-12 xl:h-12 rounded-full overflow-hidden bg-gradient-to-br from-primary to-primary/80 shadow-lg hover:scale-110 transition-transform duration-300">
-              <img 
-                src="/images/hymns-logo.jpg" 
-                alt="HYMNS Logo" 
+              <img
+                src="/images/logo/hymns-logo.jpeg"
+                alt="HYMNS Logo"
                 className="w-full h-full object-cover"
               />
             </div>
-            <span className="text-2xl xl:text-3xl font-bold tracking-tight text-foreground">
+            <span className="text-2xl xl:text-3xl font-bold tracking-tight text-orange-500">
               HYMNS
             </span>
           </Link>
@@ -49,7 +49,7 @@ const Header: React.FC = () => {
             <Link to="/">
               <Button
                 variant={location.pathname === '/' ? "secondary" : "ghost"}
-                className="text-sm font-medium"
+                className="text-sm font-medium text-orange-500"
               >
                 Home
               </Button>
@@ -61,7 +61,7 @@ const Header: React.FC = () => {
               >
                 <Button
                   variant={location.pathname === item.path ? "secondary" : "ghost"}
-                  className="text-sm font-medium"
+                  className="text-sm font-medium text-orange-500"
                 >
                   {item.name}
                 </Button>
@@ -76,7 +76,7 @@ const Header: React.FC = () => {
 
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="xl:hidden p-2 text-foreground"
+            className="xl:hidden p-2 text-orange-500"
             aria-label="Toggle menu"
           >
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -91,7 +91,7 @@ const Header: React.FC = () => {
               className={`block px-4 py-2 rounded-md text-sm font-medium ${
                 location.pathname === '/'
                   ? "bg-secondary text-secondary-foreground"
-                  : "text-foreground hover:bg-accent"
+                  : "text-orange-500 hover:bg-accent"
               }`}
             >
               Home
@@ -104,7 +104,7 @@ const Header: React.FC = () => {
                 className={`block px-4 py-2 rounded-md text-sm font-medium ${
                   location.pathname === item.path
                     ? "bg-secondary text-secondary-foreground"
-                    : "text-foreground hover:bg-accent"
+                    : "text-orange-500 hover:bg-accent"
                 }`}
               >
                 {item.name}
@@ -113,7 +113,7 @@ const Header: React.FC = () => {
             <Link
               to="/cart"
               onClick={() => setIsMenuOpen(false)}
-              className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium text-foreground hover:bg-accent"
+              className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium text-orange-500 hover:bg-accent"
             >
               <ShoppingCart className="h-4 w-4" />
               Cart
