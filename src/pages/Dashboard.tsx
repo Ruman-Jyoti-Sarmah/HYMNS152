@@ -62,7 +62,7 @@ export const Dashboard: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" style={{ backgroundImage: 'url(/images/hymns-dashboard.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
       {/* Animated background */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
