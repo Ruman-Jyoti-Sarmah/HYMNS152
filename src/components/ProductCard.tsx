@@ -12,6 +12,7 @@ interface Product {
   rating: number;
   thumbnail: string;
   images: string[];
+  reviews: number;
 }
 
 interface ProductCardProps {
@@ -31,7 +32,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onBuyNow }) =
   return (
     <Link to={`/product/${product.id}`} className="block">
       <div
-        className="bg-white overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+        className="bg-white overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-4"
         style={{
           borderRadius: '14px',
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
@@ -41,7 +42,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onBuyNow }) =
           <img
             src={product.thumbnail}
             alt={product.title}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-cover"
             onError={(e) => {
               (e.target as HTMLImageElement).src = '/images/hymns-logo.jpg';
             }}
@@ -61,7 +62,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onBuyNow }) =
               <span className="text-sm font-medium" style={{ color: '#212121' }}>{product.rating}</span>
             </div>
             <span className="text-sm" style={{ color: '#757575' }}>
-              ({Math.floor(Math.random() * 500) + 100})
+              ({product.reviews})
             </span>
           </div>
 

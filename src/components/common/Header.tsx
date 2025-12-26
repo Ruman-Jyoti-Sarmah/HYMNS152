@@ -22,7 +22,14 @@ const Header: React.FC = () => {
   ];
 
   return (
-    <header className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
+    <header className="sticky top-0 z-50" style={{
+      backgroundImage: 'url(/images/hymns-header.png)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundColor: '#0d0d0d',
+      borderBottom: '2px solid #000000'
+    }}>
       <nav className="max-w-7xl mx-auto px-4 xl:px-8">
         <div className="flex justify-between items-center h-16 xl:h-20">
           <Link to="/" className="flex items-center gap-2 xl:gap-3">

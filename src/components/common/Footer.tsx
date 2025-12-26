@@ -15,14 +15,21 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="bg-card border-t border-border">
+    <footer style={{
+      backgroundImage: 'url(/images/hymns-footer.png)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundColor: '#0d0d0d',
+      borderTop: '2px solid #000000'
+    }}>
       <div className="max-w-7xl mx-auto py-12 px-4 xl:px-8">
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 xl:gap-12">
           <div>
             <h3 className="text-lg font-semibold text-foreground mb-4">
               About HYMNS
             </h3>
-            <p className="text-muted-foreground text-sm leading-relaxed">
+            <p className="text-black text-sm leading-relaxed">
               A music and fashion creative company offering original songs, professional studio services, and branded merchandise. Experience the fusion of sound and style.
             </p>
           </div>
@@ -32,10 +39,10 @@ const Footer: React.FC = () => {
               Quick Links
             </h3>
             <div className="space-y-2 text-sm">
-              <p className="text-muted-foreground">Music Streaming</p>
-              <p className="text-muted-foreground">Studio Booking</p>
-              <p className="text-muted-foreground">Merchandise Store</p>
-              <p className="text-muted-foreground">Contact Us</p>
+              <p className="text-black">Music Streaming</p>
+              <p className="text-black">Studio Booking</p>
+              <p className="text-black">Merchandise Store</p>
+              <p className="text-black">Contact Us</p>
             </div>
           </div>
 
