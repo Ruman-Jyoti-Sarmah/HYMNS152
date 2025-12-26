@@ -27,17 +27,17 @@ const Home: React.FC = () => {
   return (
     <div className="min-h-screen">
       <section className="relative h-[70vh] xl:h-[80vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/40 to-background/60 z-10" />
         <img
-          src="/images/hymns-hero-home.png"
+          src="/images/hymns-home-hero.png"
           alt="HYMNS Hero"
-          className="absolute inset-0 w-full h-full object-cover animate-fadeIn"
+          className="absolute inset-0 w-full h-full object-cover animate-fadeIn brightness-150"
         />
         <div className="relative z-20 text-center px-4 max-w-4xl mx-auto">
           <h1 className="text-4xl xl:text-7xl font-bold text-foreground mb-4 xl:mb-6 animate-fadeInUp">
             Welcome to HYMNS
           </h1>
-          <p className="text-lg xl:text-2xl text-muted-foreground mb-6 xl:mb-8 animate-fadeInUp animation-delay-200">
+          <p className="text-lg xl:text-2xl text-black mb-6 xl:mb-8 animate-fadeInUp animation-delay-200">
             Where Music Meets Fashion
           </p>
           <div className="flex flex-col xl:flex-row gap-4 justify-center animate-fadeInUp animation-delay-400">
