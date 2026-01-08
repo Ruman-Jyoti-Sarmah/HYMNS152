@@ -484,7 +484,7 @@ const StudioBooking: React.FC = () => {
       </div>
 
       <div>
-        <h2 className="text-3xl font-bold text-foreground mb-2">Booking Confirmed!</h2>
+        <h2 className="text-3xl font-bold text-black mb-2">Booking Confirmed!</h2>
         <p className="text-muted-foreground text-lg">
           Your studio time has been successfully booked. We've sent a confirmation email with all the details.
         </p>
