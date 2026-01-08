@@ -26,7 +26,7 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto py-12 px-4 xl:px-8">
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 xl:gap-12">
           <div>
-            <h3 className="text-lg font-semibold text-foreground mb-4">
+            <h3 className="text-lg font-semibold text-green-600 mb-4">
               About HYMNS
             </h3>
             <p className="text-black text-sm leading-relaxed">
@@ -35,7 +35,7 @@ const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-foreground mb-4">
+            <h3 className="text-lg font-semibold text-green-600 mb-4">
               Quick Links
             </h3>
             <div className="space-y-2 text-sm">
@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-foreground mb-4">
+            <h3 className="text-lg font-semibold text-green-600 mb-4">
               Follow Us
             </h3>
             <div className="flex gap-2">
