@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ProductCard } from '../components/ProductCard';
 import { products } from '../data/products';
-import { cartApi, getUserId } from '../db/api';
+import { ordersApi, getUserId } from '../db/api';
 import { useToast } from '../hooks/use-toast';
 
 interface Product {
@@ -24,27 +24,27 @@ const Store = () => {
 
   console.log('Store: Rendering Store component');
 
-  const handleBuyNow = async (product: Product) => {
-    try {
-      // Add product to cart
-      const userId = getUserId();
-      await cartApi.addToCart(userId, product.id, 1); // Add 1 quantity
-
-      toast({
-        title: "Product added to cart",
-        description: "Redirecting to checkout...",
-      });
-
-      // Navigate to checkout
-      navigate('/checkout');
-    } catch (error) {
-      console.error('Failed to add product to cart:', error);
-      toast({
-        title: "Error",
-        description: "Failed to add product to cart. Please try again.",
-        variant: "destructive"
-      });
-    }
+  const handleBuyNow = (product: Product) => {
+    // Navigate to checkout with buy now item (completely separate from cart)
+    navigate('/checkout', {
+      state: {
+        buyNowItem: {
+          product: {
+            id: product.id,
+            name: product.title,
+            price: product.price,
+            image_url: product.thumbnail,
+            images: product.images,
+            category: 'General',
+            sizes: null,
+            stock: 10,
+            created_at: new Date().toISOString()
+          },
+          quantity: 1,
+          size: null
+        }
+      }
+    });
   };
 
   // Convert AdminProduct to Product interface for ProductCard

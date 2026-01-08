@@ -27,15 +27,28 @@ interface CheckoutFormData {
   customerDetails: CustomerDetails;
   address: Address;
   paymentMethod: 'cod' | 'upi' | 'card' | 'netbanking';
+  paymentDetails: {
+    upiId: string;
+    cardNumber: string;
+    cardholderName: string;
+    expiryDate: string;
+    cvv: string;
+    selectedBank: string;
+  };
 }
 
 const Checkout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  
+
+  // Check if this is a buy now flow
+  const buyNowItem = location.state?.buyNowItem;
+  const isBuyNowFlow = !!buyNowItem;
+
   const [cartItems, setCartItems] = useState<CartItemWithProduct[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [buyNowQuantity, setBuyNowQuantity] = useState(buyNowItem?.quantity || 1);
+  const [isLoading, setIsLoading] = useState(!isBuyNowFlow);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentStep, setCurrentStep] = useState<'form' | 'success'>('form');
   
@@ -52,13 +65,25 @@ const Checkout: React.FC = () => {
       state: '',
       pincode: ''
     },
-    paymentMethod: 'cod'
+    paymentMethod: 'cod',
+    paymentDetails: {
+      upiId: '',
+      cardNumber: '',
+      cardholderName: '',
+      expiryDate: '',
+      cvv: '',
+      selectedBank: ''
+    }
   });
 
   const [errors, setErrors] = useState<Partial<CheckoutFormData>>({});
 
   useEffect(() => {
-    loadCart();
+    if (!isBuyNowFlow) {
+      loadCart();
+    } else {
+      setIsLoading(false);
+    }
   }, []);
 
   const loadCart = async () => {
@@ -80,10 +105,12 @@ const Checkout: React.FC = () => {
     }
   };
 
-  const total = cartItems.reduce(
-    (sum, item) => sum + (item.product?.price || 0) * item.quantity,
-    0
-  );
+  const total = isBuyNowFlow
+    ? (buyNowItem.product?.price || 0) * buyNowQuantity
+    : cartItems.reduce(
+        (sum, item) => sum + (item.product?.price || 0) * item.quantity,
+        0
+      );
 
   const validateForm = (): boolean => {
     const newErrors: Partial<CheckoutFormData> = {};
@@ -142,20 +169,24 @@ const Checkout: React.FC = () => {
         return {
           ...prev,
           customerDetails: {
-            fullName: field === 'fullName' ? value : prev.customerDetails.fullName,
-            mobile: field === 'mobile' ? value : prev.customerDetails.mobile,
-            email: field === 'email' ? value : prev.customerDetails.email
+            ...prev.customerDetails,
+            [field]: value
           }
         };
       } else if (section === 'address') {
         return {
           ...prev,
           address: {
-            house: field === 'house' ? value : prev.address.house,
-            street: field === 'street' ? value : prev.address.street,
-            city: field === 'city' ? value : prev.address.city,
-            state: field === 'state' ? value : prev.address.state,
-            pincode: field === 'pincode' ? value : prev.address.pincode
+            ...prev.address,
+            [field]: value
+          }
+        };
+      } else if (section === 'paymentDetails') {
+        return {
+          ...prev,
+          paymentDetails: {
+            ...prev.paymentDetails,
+            [field]: value
           }
         };
       }
@@ -169,20 +200,24 @@ const Checkout: React.FC = () => {
           return {
             ...prev,
             customerDetails: {
-              fullName: field === 'fullName' ? '' : prev.customerDetails?.fullName || '',
-              mobile: field === 'mobile' ? '' : prev.customerDetails?.mobile || '',
-              email: field === 'email' ? '' : prev.customerDetails?.email || ''
+              ...prev.customerDetails,
+              [field]: ''
             }
           };
         } else if (section === 'address') {
           return {
             ...prev,
             address: {
-              house: field === 'house' ? '' : prev.address?.house || '',
-              street: field === 'street' ? '' : prev.address?.street || '',
-              city: field === 'city' ? '' : prev.address?.city || '',
-              state: field === 'state' ? '' : prev.address?.state || '',
-              pincode: field === 'pincode' ? '' : prev.address?.pincode || ''
+              ...prev.address,
+              [field]: ''
+            }
+          };
+        } else if (section === 'paymentDetails') {
+          return {
+            ...prev,
+            paymentDetails: {
+              ...prev.paymentDetails,
+              [field]: ''
             }
           };
         }
@@ -203,49 +238,56 @@ const Checkout: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      // Create order object
-      const orderData = {
-        customerDetails: formData.customerDetails,
-        address: {
-          house: formData.address.house,
-          street: formData.address.street,
-          city: formData.address.city,
-          state: formData.address.state,
-          pincode: formData.address.pincode
-        },
-        paymentMethod: formData.paymentMethod,
-        cartItems: cartItems.map(item => ({
-          id: item.id,
-          productId: item.product_id,
-          quantity: item.quantity,
-          size: item.size,
-          name: item.product?.name,
-          price: item.product?.price
-        })),
-        totalAmount: total,
-        orderStatus: "pending" as const
+      const shippingAddress = {
+        house: formData.address.house,
+        street: formData.address.street,
+        city: formData.address.city,
+        state: formData.address.state,
+        pincode: formData.address.pincode
       };
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      if (isBuyNowFlow) {
+        // Handle buy now order - create single item order
+        const buyNowOrderItems = [{
+          id: `temp-${Date.now()}`,
+          user_id: getUserId(),
+          product_id: buyNowItem.product.id,
+          quantity: buyNowQuantity,
+          size: buyNowItem.size,
+          created_at: new Date().toISOString(),
+          product: buyNowItem.product
+        }];
 
-      // Create order in database
-      await ordersApi.createOrder(
-        getUserId(),
-        cartItems,
-        orderData.address,
-        formData.paymentMethod
-      );
+        await ordersApi.createOrder(
+          getUserId(),
+          buyNowOrderItems,
+          shippingAddress,
+          formData.paymentMethod
+        );
 
-      // Clear cart
-      await cartApi.clearCart(getUserId());
+        toast({
+          title: "Order placed successfully!",
+          description: "Your order has been placed and will be processed soon."
+        });
+      } else {
+        // Handle regular cart checkout
+        await ordersApi.createOrder(
+          getUserId(),
+          cartItems,
+          shippingAddress,
+          formData.paymentMethod
+        );
+
+        // Clear cart only for regular checkout
+        await cartApi.clearCart(getUserId());
+
+        toast({
+          title: "Order placed successfully!",
+          description: "Your order has been placed and will be processed soon."
+        });
+      }
 
       setCurrentStep('success');
-      
-      toast({
-        title: "Order placed successfully!",
-        description: "Your order has been placed and will be processed soon."
-      });
     } catch (error) {
       toast({
         title: "Error",
@@ -258,23 +300,27 @@ const Checkout: React.FC = () => {
   };
 
   const handleBackToCart = () => {
-    navigate('/cart');
+    if (isBuyNowFlow) {
+      navigate('/store');
+    } else {
+      navigate('/cart');
+    }
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-12 w-12 text-blue-400 animate-spin mx-auto mb-4" />
-          <p className="text-gray-400">Loading checkout...</p>
+          <p className="text-gray-600">Loading checkout...</p>
         </div>
       </div>
     );
   }
 
   if (currentStep === 'success') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black py-12 px-4">
+  return (
+    <div className="min-h-screen bg-white py-12 px-4">
         <div className="max-w-2xl mx-auto">
           <PremiumCard className="bg-gradient-to-br from-gray-900/80 to-black/80 border-gray-700/50">
             <PremiumCardHeader>
@@ -293,12 +339,19 @@ const Checkout: React.FC = () => {
                 <div className="bg-gray-800/50 rounded-xl p-6">
                   <h3 className="text-lg font-semibold text-white mb-4">Order Summary</h3>
                   <div className="space-y-3">
-                    {cartItems.map((item, index) => (
-                      <div key={index} className="flex justify-between items-center text-gray-300">
-                        <span>{item.product?.name} x{item.quantity}</span>
-                        <span className="font-medium">₹{(item.product?.price || 0) * item.quantity}</span>
+                    {isBuyNowFlow ? (
+                      <div className="flex justify-between items-center text-gray-300">
+                        <span>{buyNowItem.product?.name} x{buyNowQuantity}</span>
+                        <span className="font-medium">₹{(buyNowItem.product?.price || 0) * buyNowQuantity}</span>
                       </div>
-                    ))}
+                    ) : (
+                      cartItems.map((item, index) => (
+                        <div key={index} className="flex justify-between items-center text-gray-300">
+                          <span>{item.product?.name} x{item.quantity}</span>
+                          <span className="font-medium">₹{(item.product?.price || 0) * item.quantity}</span>
+                        </div>
+                      ))
+                    )}
                     <div className="border-t border-gray-600/50 pt-3 mt-3">
                       <div className="flex justify-between items-center font-bold text-white">
                         <span>Total Amount</span>
@@ -365,7 +418,7 @@ const Checkout: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black py-12 px-4">
+    <div className="min-h-screen bg-white py-12 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
           <Button
@@ -374,10 +427,12 @@ const Checkout: React.FC = () => {
             className="text-gray-300 hover:text-white"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Cart
+            {isBuyNowFlow ? 'Back to Store' : 'Back to Cart'}
           </Button>
           <div className="flex-1">
-            <h1 className="text-3xl xl:text-4xl font-bold text-white">Checkout</h1>
+            <h1 className="text-3xl xl:text-4xl font-bold text-black">
+              {isBuyNowFlow ? 'Buy Now Checkout' : 'Checkout'}
+            </h1>
             <p className="text-gray-400 mt-1">Complete your order</p>
           </div>
         </div>
@@ -393,30 +448,75 @@ const Checkout: React.FC = () => {
               
               <PremiumCardContent>
                 <div className="space-y-4">
-                  {cartItems.map((item, index) => (
-                    <div key={index} className="flex items-center gap-4 p-4 bg-gray-800/50 rounded-xl">
+                  {isBuyNowFlow ? (
+                    <div className="flex items-center gap-4 p-4 bg-gray-800/50 rounded-xl">
                       <div className="w-16 h-16 bg-gray-700 rounded-lg overflow-hidden">
                         <img
-                          src={item.product?.image_url || ''}
-                          alt={item.product?.name}
+                          src={buyNowItem.product?.image_url || ''}
+                          alt={buyNowItem.product?.name}
                           className="w-full h-full object-contain"
                         />
                       </div>
                       <div className="flex-1">
-                        <h4 className="font-semibold text-white">{item.product?.name}</h4>
-                        {item.size && (
-                          <p className="text-sm text-gray-400">Size: {item.size}</p>
+                        <h4 className="font-semibold text-white">{buyNowItem.product?.name}</h4>
+                        {buyNowItem.size && (
+                          <p className="text-sm text-gray-400">Size: {buyNowItem.size}</p>
                         )}
-                        <div className="flex justify-between items-center mt-2">
-                          <span className="text-gray-300">Qty: {item.quantity}</span>
+                        <div className="flex items-center justify-between mt-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-300">Qty:</span>
+                            <div className="flex items-center gap-1">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setBuyNowQuantity(Math.max(1, buyNowQuantity - 1))}
+                                className="h-8 w-8 p-0"
+                              >
+                                -
+                              </Button>
+                              <span className="w-8 text-center text-white">{buyNowQuantity}</span>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setBuyNowQuantity(buyNowQuantity + 1)}
+                                className="h-8 w-8 p-0"
+                              >
+                                +
+                              </Button>
+                            </div>
+                          </div>
                           <span className="font-bold text-white">
-                            ₹{(item.product?.price || 0) * item.quantity}
+                            ₹{(buyNowItem.product?.price || 0) * buyNowQuantity}
                           </span>
                         </div>
                       </div>
                     </div>
-                  ))}
-                  
+                  ) : (
+                    cartItems.map((item, index) => (
+                      <div key={index} className="flex items-center gap-4 p-4 bg-gray-800/50 rounded-xl">
+                        <div className="w-16 h-16 bg-gray-700 rounded-lg overflow-hidden">
+                          <img
+                            src={item.product?.image_url || ''}
+                            alt={item.product?.name}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-white">{item.product?.name}</h4>
+                          {item.size && (
+                            <p className="text-sm text-gray-400">Size: {item.size}</p>
+                          )}
+                          <div className="flex justify-between items-center mt-2">
+                            <span className="text-gray-300">Qty: {item.quantity}</span>
+                            <span className="font-bold text-white">
+                              ₹{(item.product?.price || 0) * item.quantity}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+
                   <div className="border-t border-gray-600/50 pt-4">
                     <div className="flex justify-between items-center text-xl font-bold text-white">
                       <span>Total Amount</span>
@@ -536,7 +636,7 @@ const Checkout: React.FC = () => {
                       <CreditCard className="h-5 w-5" />
                       Payment Method
                     </h3>
-                    
+
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       {[
                         { value: 'cod', label: 'Cash on Delivery', icon: '💵' },
@@ -567,6 +667,96 @@ const Checkout: React.FC = () => {
                         </label>
                       ))}
                     </div>
+
+                    {/* Payment Details */}
+                    {formData.paymentMethod === 'upi' && (
+                      <div className="mt-4 p-4 bg-gray-800/30 rounded-xl border border-gray-600/30 animate-in slide-in-from-top-2 duration-300">
+                        <h4 className="text-white font-medium mb-3">UPI Details</h4>
+                        <div className="space-y-3">
+                          <PremiumInput
+                            label="UPI ID"
+                            value={formData.paymentDetails.upiId}
+                            onChange={(e) => handleInputChange('paymentDetails', 'upiId', e.target.value)}
+                            placeholder="yourname@upi"
+                            required
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="w-full"
+                          >
+                            Verify UPI
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+
+                    {formData.paymentMethod === 'card' && (
+                      <div className="mt-4 p-4 bg-gray-800/30 rounded-xl border border-gray-600/30 animate-in slide-in-from-top-2 duration-300">
+                        <h4 className="text-white font-medium mb-3">Card Details</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div className="md:col-span-2">
+                            <PremiumInput
+                              label="Card Number"
+                              value={formData.paymentDetails.cardNumber}
+                              onChange={(e) => handleInputChange('paymentDetails', 'cardNumber', e.target.value)}
+                              placeholder="1234 5678 9012 3456"
+                              required
+                            />
+                          </div>
+                          <PremiumInput
+                            label="Cardholder Name"
+                            value={formData.paymentDetails.cardholderName}
+                            onChange={(e) => handleInputChange('paymentDetails', 'cardholderName', e.target.value)}
+                            placeholder="John Doe"
+                            required
+                          />
+                          <PremiumInput
+                            label="Expiry Date"
+                            value={formData.paymentDetails.expiryDate}
+                            onChange={(e) => handleInputChange('paymentDetails', 'expiryDate', e.target.value)}
+                            placeholder="MM/YY"
+                            required
+                          />
+                          <PremiumInput
+                            label="CVV"
+                            value={formData.paymentDetails.cvv}
+                            onChange={(e) => handleInputChange('paymentDetails', 'cvv', e.target.value)}
+                            placeholder="123"
+                            type="password"
+                            required
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {formData.paymentMethod === 'netbanking' && (
+                      <div className="mt-4 p-4 bg-gray-800/30 rounded-xl border border-gray-600/30 animate-in slide-in-from-top-2 duration-300">
+                        <h4 className="text-white font-medium mb-3">Net Banking</h4>
+                        <div className="space-y-3">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                              Select Bank
+                            </label>
+                            <select
+                              value={formData.paymentDetails.selectedBank}
+                              onChange={(e) => handleInputChange('paymentDetails', 'selectedBank', e.target.value)}
+                              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              required
+                            >
+                              <option value="">Choose your bank</option>
+                              <option value="sbi">State Bank of India</option>
+                              <option value="hdfc">HDFC Bank</option>
+                              <option value="icici">ICICI Bank</option>
+                              <option value="axis">Axis Bank</option>
+                              <option value="pnb">Punjab National Bank</option>
+                              <option value="kotak">Kotak Mahindra Bank</option>
+                              <option value="other">Other Bank</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Place Order Button */}

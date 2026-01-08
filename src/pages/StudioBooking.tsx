@@ -331,7 +331,7 @@ const StudioBooking: React.FC = () => {
   const renderDetailsForm = () => (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-foreground mb-2">Booking Details</h2>
+        <h2 className="text-2xl font-bold text-black mb-2">Booking Details</h2>
         <p className="text-muted-foreground">Please provide your contact information</p>
       </div>
 

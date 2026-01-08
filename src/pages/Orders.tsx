@@ -97,7 +97,7 @@ const Orders: React.FC = () => {
         {orders.length === 0 ? (
           <div className="text-center py-20">
             <Package className="h-24 w-24 text-muted-foreground mx-auto mb-6" />
-            <h2 className="text-2xl font-semibold text-foreground mb-4">
+            <h2 className="text-2xl font-semibold text-black mb-4">
               No orders yet
             </h2>
             <p className="text-muted-foreground mb-8">
