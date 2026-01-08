@@ -93,7 +93,7 @@ const Store = () => {
 
       <div className="max-w-[1200px] mx-auto px-4 py-16">
 
-        <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
+        <div className="grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
           {displayProducts.map((product) => (
             <ProductCard key={product.id} product={product} onBuyNow={handleBuyNow} />
           ))}
