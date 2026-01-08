@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
+import { Link } from 'react-router-dom';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -183,9 +184,11 @@ const Contact: React.FC = () => {
                 <p className="text-muted-foreground mb-6">
                   Interested in booking our studio? Contact us directly to discuss availability, pricing, and your project requirements. We offer flexible scheduling and competitive rates.
                 </p>
-                <Button variant="outline" className="w-full">
-                  Book Studio Time
-                </Button>
+                <Link to="/studio-booking">
+                  <Button variant="outline" className="w-full">
+                    Book Studio Time
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
 

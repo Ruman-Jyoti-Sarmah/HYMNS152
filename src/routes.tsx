@@ -17,6 +17,7 @@ import Store from '@/pages/Store';
 import ProductDetails from '@/pages/ProductDetails';
 import Orders from '@/pages/Orders';
 import Studio from '@/pages/Studio';
+import StudioBooking from '@/pages/StudioBooking';
 import Cart from '@/pages/Cart';
 import Checkout from '@/pages/Checkout';
 import AdminPanel from '@/components/AdminPanel';
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
       {
         path: '/studio',
         element: <ProtectedRoute requireAuth={true}><Studio /></ProtectedRoute>,
+      },
+      {
+        path: '/studio-booking',
+        element: <ProtectedRoute requireAuth={true}><StudioBooking /></ProtectedRoute>,
       },
       {
         path: '/login',

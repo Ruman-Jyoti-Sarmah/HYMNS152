@@ -216,6 +216,28 @@ All colors MUST be HSL.
   .animation-delay-1000 {
     animation-delay: 1s;
   }
+
+  /* Mobile Swipe Navigation Animations */
+  .page-transition {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .page-enter-right {
+    transform: translateX(100%);
+  }
+
+  .page-enter-left {
+    transform: translateX(-100%);
+  }
+
+  .page-exit {
+    transform: translateX(0);
+  }
+
+  /* Smooth page transitions */
+  .main-content {
+    transition: all 0.3s ease-in-out;
+  }
 }
 
 /* Confetti Animation */
