@@ -264,7 +264,8 @@ const Checkout: React.FC = () => {
       }[formData.paymentMethod] || formData.paymentMethod;
 
       // Send order data to Python backend (includes email sending)
-      const response = await fetch('http://localhost:5000/api/order', {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${API_URL}/api/order`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
