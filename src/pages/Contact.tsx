@@ -48,7 +48,7 @@ const Contact: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.email || !formData.message) {
       toast({
         title: "Missing fields",
@@ -59,15 +59,40 @@ const Contact: React.FC = () => {
     }
 
     setIsSubmitting(true);
-    
-    setTimeout(() => {
-      toast({
-        title: "Message sent!",
-        description: "We'll get back to you as soon as possible."
+
+    try {
+      const response = await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
       });
-      setFormData({ name: '', email: '', subject: '', message: '' });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast({
+          title: "Message sent!",
+          description: "We'll get back to you as soon as possible."
+        });
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        toast({
+          title: "Error",
+          description: data.message || "Failed to send message. Please try again.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Network error. Please check your connection and try again.",
+        variant: "destructive"
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

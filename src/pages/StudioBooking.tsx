@@ -129,16 +129,49 @@ const StudioBooking: React.FC = () => {
   const handleBookingSubmit = async () => {
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    try {
+      const bookingType = bookingData.purpose.includes('Music') ? 'Music' :
+                         bookingData.purpose.includes('Studio') ? 'Studio' : 'Service';
 
-    toast({
-      title: "Booking confirmed!",
-      description: "Your studio time has been booked successfully. Check your email for confirmation details.",
-    });
+      const response = await fetch('http://localhost:5000/api/booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customer_name: bookingData.name,
+          email: bookingData.email,
+          phone: bookingData.phone,
+          booking_type: bookingType,
+          date_time: `${selectedDate ? format(selectedDate, 'yyyy-MM-dd') : ''} ${selectedSlots[0]?.time || ''}`,
+          notes: bookingData.purpose
+        })
+      });
 
-    setBookingStep('success');
-    setIsSubmitting(false);
+      const data = await response.json();
+
+      if (data.success) {
+        toast({
+          title: "Booking confirmed!",
+          description: "Your studio time has been booked successfully. Check your email for confirmation details.",
+        });
+        setBookingStep('success');
+      } else {
+        toast({
+          title: "Booking Failed",
+          description: data.message || "Failed to confirm booking. Please try again.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Network error. Please check your connection and try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const studioDetails = {

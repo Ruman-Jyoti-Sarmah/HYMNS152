@@ -76,7 +76,11 @@ const Checkout: React.FC = () => {
     }
   });
 
-  const [errors, setErrors] = useState<Partial<CheckoutFormData>>({});
+  const [errors, setErrors] = useState<{
+    customerDetails?: { fullName?: string; mobile?: string; email?: string };
+    address?: { house?: string; street?: string; city?: string; state?: string; pincode?: string };
+    paymentDetails?: { upiId?: string; cardNumber?: string; cardholderName?: string; expiryDate?: string; cvv?: string; selectedBank?: string };
+  }>({});
 
   useEffect(() => {
     if (!isBuyNowFlow) {
@@ -113,7 +117,7 @@ const Checkout: React.FC = () => {
       );
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<CheckoutFormData> = {};
+    const newErrors: typeof errors = {};
 
     // Validate customer details
     if (!formData.customerDetails.fullName.trim()) {
@@ -285,6 +289,42 @@ const Checkout: React.FC = () => {
           title: "Order placed successfully!",
           description: "Your order has been placed and will be processed soon."
         });
+      }
+
+      // Send email notification via backend API
+      try {
+        const fullAddress = `${formData.address.house}, ${formData.address.street}, ${formData.address.city}, ${formData.address.state} - ${formData.address.pincode}`;
+        const productsString = isBuyNowFlow
+          ? `${buyNowItem.product?.name} (x${buyNowQuantity}) - ₹${(buyNowItem.product?.price || 0) * buyNowQuantity}`
+          : cartItems.map(item =>
+              `${item.product?.name} (x${item.quantity}) - ₹${(item.product?.price || 0) * item.quantity}`
+            ).join(', ');
+
+        const paymentMethodLabel = {
+          cod: 'Cash on Delivery',
+          upi: 'UPI',
+          card: 'Debit/Credit Card',
+          netbanking: 'Net Banking'
+        }[formData.paymentMethod] || formData.paymentMethod;
+
+        await fetch('http://localhost:5000/api/order', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            customer_name: formData.customerDetails.fullName,
+            phone: formData.customerDetails.mobile,
+            email: formData.customerDetails.email || '',
+            address: fullAddress,
+            products: productsString,
+            total_amount: total,
+            payment_method: paymentMethodLabel
+          })
+        });
+      } catch (emailError) {
+        console.error('Failed to send email notification:', emailError);
+        // Don't show error to user as order is already placed
       }
 
       setCurrentStep('success');
