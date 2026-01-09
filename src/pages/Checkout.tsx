@@ -193,12 +193,17 @@ const Checkout: React.FC = () => {
             [field]: value
           }
         };
+      } else if (section === 'paymentMethod') {
+        return {
+          ...prev,
+          paymentMethod: value as CheckoutFormData['paymentMethod']
+        };
       }
       return prev;
     });
 
     // Clear error when user starts typing
-    if (errors[section]) {
+    if (errors[section as keyof typeof errors]) {
       setErrors(prev => {
         if (section === 'customerDetails') {
           return {
@@ -242,96 +247,59 @@ const Checkout: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      const shippingAddress = {
-        house: formData.address.house,
-        street: formData.address.street,
-        city: formData.address.city,
-        state: formData.address.state,
-        pincode: formData.address.pincode
-      };
+      // Prepare order data
+      const fullAddress = `${formData.address.house}, ${formData.address.street}, ${formData.address.city}, ${formData.address.state} - ${formData.address.pincode}`;
 
-      if (isBuyNowFlow) {
-        // Handle buy now order - create single item order
-        const buyNowOrderItems = [{
-          id: `temp-${Date.now()}`,
-          user_id: getUserId(),
-          product_id: buyNowItem.product.id,
-          quantity: buyNowQuantity,
-          size: buyNowItem.size,
-          created_at: new Date().toISOString(),
-          product: buyNowItem.product
-        }];
+      const productsString = isBuyNowFlow
+        ? `${buyNowItem.product?.name} (x${buyNowQuantity}) - ₹${(buyNowItem.product?.price || 0) * buyNowQuantity}`
+        : cartItems.map(item =>
+            `${item.product?.name} (x${item.quantity}) - ₹${(item.product?.price || 0) * item.quantity}`
+          ).join(', ');
 
-        await ordersApi.createOrder(
-          getUserId(),
-          buyNowOrderItems,
-          shippingAddress,
-          formData.paymentMethod
-        );
+      const paymentMethodLabel = {
+        cod: 'Cash on Delivery',
+        upi: 'UPI',
+        card: 'Debit/Credit Card',
+        netbanking: 'Net Banking'
+      }[formData.paymentMethod] || formData.paymentMethod;
 
+      // Send order data to Python backend (includes email sending)
+      const response = await fetch('http://localhost:5000/api/order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customer_name: formData.customerDetails.fullName,
+          phone: formData.customerDetails.mobile,
+          email: formData.customerDetails.email || '',
+          address: fullAddress,
+          products: productsString,
+          total_amount: total,
+          payment_method: paymentMethodLabel
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
         toast({
           title: "Order placed successfully!",
           description: "Your order has been placed and will be processed soon."
         });
+        setCurrentStep('success');
       } else {
-        // Handle regular cart checkout
-        await ordersApi.createOrder(
-          getUserId(),
-          cartItems,
-          shippingAddress,
-          formData.paymentMethod
-        );
-
-        // Clear cart only for regular checkout
-        await cartApi.clearCart(getUserId());
-
         toast({
-          title: "Order placed successfully!",
-          description: "Your order has been placed and will be processed soon."
+          title: "Error",
+          description: data.message || "Failed to place order. Please try again.",
+          variant: "destructive"
         });
       }
-
-      // Send email notification via backend API
-      try {
-        const fullAddress = `${formData.address.house}, ${formData.address.street}, ${formData.address.city}, ${formData.address.state} - ${formData.address.pincode}`;
-        const productsString = isBuyNowFlow
-          ? `${buyNowItem.product?.name} (x${buyNowQuantity}) - ₹${(buyNowItem.product?.price || 0) * buyNowQuantity}`
-          : cartItems.map(item =>
-              `${item.product?.name} (x${item.quantity}) - ₹${(item.product?.price || 0) * item.quantity}`
-            ).join(', ');
-
-        const paymentMethodLabel = {
-          cod: 'Cash on Delivery',
-          upi: 'UPI',
-          card: 'Debit/Credit Card',
-          netbanking: 'Net Banking'
-        }[formData.paymentMethod] || formData.paymentMethod;
-
-        await fetch('http://localhost:5000/api/order', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            customer_name: formData.customerDetails.fullName,
-            phone: formData.customerDetails.mobile,
-            email: formData.customerDetails.email || '',
-            address: fullAddress,
-            products: productsString,
-            total_amount: total,
-            payment_method: paymentMethodLabel
-          })
-        });
-      } catch (emailError) {
-        console.error('Failed to send email notification:', emailError);
-        // Don't show error to user as order is already placed
-      }
-
-      setCurrentStep('success');
     } catch (error) {
+      console.error('Order placement error:', error);
       toast({
         title: "Error",
-        description: "Failed to place order. Please try again.",
+        description: "Failed to place order. Please check your connection and try again.",
         variant: "destructive"
       });
     } finally {
