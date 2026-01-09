@@ -174,9 +174,5 @@ def handle_booking():
 
 @app.route('/', methods=['GET'])
 def home():
-    return jsonify({'message': 'HYMNS Backend API is running', 'endpoints': ['/api/order', '/api/contact', '/api/booking']})
-
-if __name__ == '__main__':
-    print("Starting HYMNS Backend Server...")
-    print(f"Email notifications will be sent to: {RECEIVER_EMAIL}")
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    return jsonify({'message': 'HYMNS Backend API is running', 'endpoints': ['/api/order', '/api/contact', '/api/booking']
+})
