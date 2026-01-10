@@ -11,7 +11,26 @@ from config import SMTP_SERVER, SMTP_PORT, SENDER_EMAIL, SENDER_PASSWORD, RECEIV
 logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
-CORS(app, origins=["https://hymns-152.vercel.app", "http://localhost:5000"])
+CORS(
+    app,
+    resources={r"/api/*": {"origins": [
+        "https://hymns-152.vercel.app",
+        "http://localhost:5173"
+    ]}},
+    supports_credentials=False,
+    methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"]
+)
+
+@app.before_request
+def handle_preflight():
+    if request.method == "OPTIONS":
+        response = jsonify({})
+        response.headers.add("Access-Control-Allow-Origin", "https://hymns-152.vercel.app")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+        response.headers.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+        return response
+
 
 def send_email(subject, body):
     """Send email using Gmail SMTP"""
