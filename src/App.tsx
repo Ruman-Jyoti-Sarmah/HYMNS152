@@ -14,7 +14,8 @@ const App: React.FC = () => {
   // Test backend connectivity
   useEffect(() => {
     const testBackendConnection = async () => {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      // const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const API_URL = import.meta.env.VITE_API_URL || 'https://hymns-backend.onrender.com';
 
       try {
         console.log('🔍 Testing backend connectivity...');

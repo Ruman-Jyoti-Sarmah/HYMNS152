@@ -5,7 +5,10 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
 from datetime import datetime
+import logging
 from config import SMTP_SERVER, SMTP_PORT, SENDER_EMAIL, SENDER_PASSWORD, RECEIVER_EMAIL
+
+logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
 CORS(app, origins=["https://hymns-152.vercel.app", "http://localhost:5000"])
@@ -13,6 +16,7 @@ CORS(app, origins=["https://hymns-152.vercel.app", "http://localhost:5000"])
 def send_email(subject, body):
     """Send email using Gmail SMTP"""
     try:
+        logging.info(f"Attempting to send email: {subject}")
         # Create message
         msg = MIMEMultipart()
         msg['From'] = SENDER_EMAIL
@@ -36,15 +40,17 @@ def send_email(subject, body):
         # Close the server
         server.quit()
 
+        logging.info(f"Email sent successfully: {subject}")
         return True
     except Exception as e:
-        print(f"Failed to send email: {str(e)}")
+        logging.error(f"Failed to send email: {str(e)}")
         return False
 
 @app.route('/api/order', methods=['POST'])
 def handle_order():
     try:
         data = request.get_json()
+        logging.info(f"Order request received: {data}")
 
         # Extract order details
         customer_name = data.get('customer_name', '')
@@ -84,15 +90,18 @@ def handle_order():
         if send_email(subject, body):
             return jsonify({'success': True, 'message': 'Order email sent successfully'})
         else:
+            logging.error("Failed to send order email")
             return jsonify({'success': False, 'message': 'Failed to send order email'}), 500
 
     except Exception as e:
+        logging.error(f"Error processing order: {str(e)}")
         return jsonify({'success': False, 'message': f'Error processing order: {str(e)}'}), 500
 
 @app.route('/api/contact', methods=['POST'])
 def handle_contact():
     try:
         data = request.get_json()
+        logging.info(f"Contact request received: {data}")
 
         # Extract contact details
         name = data.get('name', '')
@@ -123,15 +132,18 @@ def handle_contact():
         if send_email(email_subject, body):
             return jsonify({'success': True, 'message': 'Contact email sent successfully'})
         else:
+            logging.error("Failed to send contact email")
             return jsonify({'success': False, 'message': 'Failed to send contact email'}), 500
 
     except Exception as e:
+        logging.error(f"Error processing contact: {str(e)}")
         return jsonify({'success': False, 'message': f'Error processing contact: {str(e)}'}), 500
 
 @app.route('/api/booking', methods=['POST'])
 def handle_booking():
     try:
         data = request.get_json()
+        logging.info(f"Booking request received: {data}")
 
         # Extract booking details
         customer_name = data.get('customer_name', '')
@@ -167,9 +179,11 @@ def handle_booking():
         if send_email(subject, body):
             return jsonify({'success': True, 'message': 'Booking email sent successfully'})
         else:
+            logging.error("Failed to send booking email")
             return jsonify({'success': False, 'message': 'Failed to send booking email'}), 500
 
     except Exception as e:
+        logging.error(f"Error processing booking: {str(e)}")
         return jsonify({'success': False, 'message': f'Error processing booking: {str(e)}'}), 500
 
 @app.route('/', methods=['GET'])
