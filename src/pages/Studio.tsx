@@ -73,10 +73,10 @@ const Studio: React.FC = () => {
               <div className="space-y-4">
                 {features.map((feature, index) => (
                   <div key={feature.text} className={`flex items-center gap-3 animate-fadeInLeft animation-delay-${(index + 2) * 200}`}>
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors">
-                      <feature.icon className="h-5 w-5 text-primary" />
+                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center hover:bg-blue-200 transition-colors">
+                      <feature.icon className="h-5 w-5 text-blue-600" />
                     </div>
-                    <span className="text-foreground">{feature.text}</span>
+                    <span className="text-blue-600">{feature.text}</span>
                   </div>
                 ))}
               </div>
