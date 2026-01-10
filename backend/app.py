@@ -8,7 +8,7 @@ from datetime import datetime
 from config import SMTP_SERVER, SMTP_PORT, SENDER_EMAIL, SENDER_PASSWORD, RECEIVER_EMAIL
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["https://hymns-152.vercel.app", "http://localhost:5000"])
 
 def send_email(subject, body):
     """Send email using Gmail SMTP"""
@@ -174,5 +174,8 @@ def handle_booking():
 
 @app.route('/', methods=['GET'])
 def home():
-    return jsonify({'message': 'HYMNS Backend API is running', 'endpoints': ['/api/order', '/api/contact', '/api/booking']
-})
+    return jsonify({'message': 'HYMNS Backend API is running', 'endpoints': ['/api/order', '/api/contact', '/api/booking']})
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
